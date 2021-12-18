@@ -4,6 +4,7 @@ import Logger from "./utils/Logger";
 import { PrismaClient } from "@prisma/client";
 import Sender from "./utils/Sender";
 import Global from "./utils/Global";
+import CooldownManager from "./utils/CooldownManager";
 import CommandLoader from "./commands/CommandLoader";
 import EventLoader from "./events/EventLoader";
 import FeatureLoader from "./features/FeatureLoader";
@@ -16,6 +17,7 @@ class Client extends DiscordClient {
     public prisma = new PrismaClient();
     public sender = new Sender(this);
     public global = new Global(this);
+    public cooldownManager = new CooldownManager(this);
     public commandLoader = new CommandLoader(this);
     public eventLoader = new EventLoader(this);
     public featureLoader = new FeatureLoader(this);
