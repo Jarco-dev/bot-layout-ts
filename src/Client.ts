@@ -1,26 +1,24 @@
-import { Client as DiscordClient } from "discord.js";
-import config from "./config";
-import Logger from "./utils/Logger";
 import { PrismaClient } from "@prisma/client";
-import Sender from "./utils/Sender";
-import Global from "./utils/Global";
-import CooldownManager from "./utils/CooldownManager";
+import { Client as DiscordClient } from "discord.js";
 import CommandLoader from "./commands/CommandLoader";
+import config from "./config";
 import EventLoader from "./events/EventLoader";
 import FeatureLoader from "./features/FeatureLoader";
 import type { SecretConfig } from "./types";
+import Global from "./utils/Global";
+import Logger from "./utils/Logger";
+import Sender from "./utils/Sender";
 
 class Client extends DiscordClient {
     public sConfig = require("../secret/config") as SecretConfig;
     public config = config;
-    public logger = new Logger(this);
+    public logger = new Logger();
     public prisma = new PrismaClient();
-    public sender = new Sender(this);
-    public global = new Global(this);
-    public cooldownManager = new CooldownManager(this);
-    public commandLoader = new CommandLoader(this);
-    public eventLoader = new EventLoader(this);
-    public featureLoader = new FeatureLoader(this);
+    public sender = new Sender();
+    public global = new Global();
+    public commandLoader = new CommandLoader();
+    public eventLoader = new EventLoader();
+    public featureLoader = new FeatureLoader();
 
     constructor() {
         super(config.CLIENT_OPTIONS);

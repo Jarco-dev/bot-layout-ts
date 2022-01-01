@@ -1,21 +1,17 @@
-import BaseCommand from "../utils/structures/BaseCommand";
-import type Client from "../index";
+import type { Snowflake } from "discord.js";
 import { promises as fs } from "fs";
 import path from "path";
-import type { CommandStatus } from "../types";
-import type { Snowflake } from "discord.js";
+import type { CommandLoadLevel } from "../types";
+import Base from "../utils/structures/Base";
+import BaseCommand from "../utils/structures/BaseCommand";
 
-class CommandLoader {
+class CommandLoader extends Base {
     public commands: { [key: string]: BaseCommand };
     public path: string;
-    private client: typeof Client;
-    private logger: typeof Client.logger;
-    private config: typeof Client.config;
 
-    constructor(client: typeof Client) {
-        this.client = client;
-        this.logger = client.logger;
-        this.config = client.config;
+    constructor() {
+        super();
+
         this.commands = {};
         this.path = path.join(__dirname, "../commands/");
     }
@@ -44,11 +40,11 @@ class CommandLoader {
         }
     }
 
-    async updateCommands(status: CommandStatus, guildId?: Snowflake): Promise<void> {
+    async updateCommands(status: CommandLoadLevel, guildId?: Snowflake): Promise<void> {
         if (!["ENABLED", "ALL", "DEV"].includes(status)) throw new Error("status is a invalid value");
         await this.client.application!.fetch();
         const data = [];
-        for (let commandName in this.commands) {
+        for (const commandName in this.commands) {
             const command = this.commands[commandName];
             if ((status !== "ALL" && command.status !== status) || command.status === "DISABLED") continue;
             data.push({

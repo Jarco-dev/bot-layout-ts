@@ -1,25 +1,18 @@
-import type Client from "../index";
-import type { ButtonInteraction, Channel, ChannelMention, CommandInteraction, Guild, GuildChannel, GuildMember, PermissionResolvable, Role, RoleMention, SelectMenuInteraction, Snowflake, TextBasedChannels, User, UserMention } from "discord.js";
+import type { ButtonInteraction, Channel, ChannelMention, CommandInteraction, Guild, GuildChannel, GuildMember, PermissionResolvable, Role, RoleMention, SelectMenuInteraction, Snowflake, TextBasedChannel, User, UserMention } from "discord.js";
 import { DMChannel, Interaction, MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu } from "discord.js";
+import Base from "./structures/Base";
 
-class Global {
-    private client: typeof Client;
-    private logger: typeof Client.logger;
-    private config: typeof Client.config;
-    private sender: typeof Client.sender;
+class Global extends Base {
 
-    constructor(client: typeof Client) {
-        this.client = client;
-        this.logger = client.logger;
-        this.config = client.config;
-        this.sender = client.sender;
+    constructor() {
+        super();
     }
 
     public embed(): MessageEmbed {
         return new MessageEmbed()
             .setColor(this.config.COLORS.DEFAULT)
             .setTimestamp()
-            .setFooter(`${this.client.user!.username} v${this.config.VERSION}`);
+            .setFooter({ text: `${this.client.user!.username} v${this.config.VERSION}` });
     }
 
     public emptyEmbed(): MessageEmbed {
@@ -38,35 +31,35 @@ class Global {
         return new MessageSelectMenu();
     }
 
-    public async fetchUser(userId: (Snowflake | UserMention)): Promise<User | void> {
+    public async fetchUser(userId?: (Snowflake | UserMention | null | undefined)): Promise<User | void> {
         if (userId) {
             const snowflake = userId.match(/[0-9]+/)?.[0];
             if (snowflake) return await this.client.users.fetch(userId).catch(() => {});
         }
     }
 
-    public async fetchMember(guild: Guild, userId: (Snowflake | UserMention)): Promise<void | GuildMember> {
+    public async fetchMember(guild: Guild, userId?: (Snowflake | UserMention | null | undefined)): Promise<void | GuildMember> {
         if (guild && userId) {
             const snowflake = userId.match(/[0-9]+/)?.[0];
             if (snowflake) return await guild.members.fetch(userId).catch(() => { });
         }
     }
 
-    public async fetchRole(guild: Guild, roleId: (Snowflake | RoleMention)): Promise<Role | null | void> {
+    public async fetchRole(guild: Guild, roleId?: (Snowflake | RoleMention | null | undefined)): Promise<Role | null | void> {
         if (guild && roleId) {
             const snowflake = roleId.match(/[0-9]+/)?.[0];
             if (snowflake) return await guild.roles.fetch(snowflake).catch(() => { });
         }
     }
 
-    public fetchChannel(channelId: (Snowflake | ChannelMention)): Channel | null | undefined {
+    public fetchChannel(channelId?: (Snowflake | ChannelMention | null | undefined)): Channel | null | undefined {
         if (channelId) {
             const snowflake = channelId.match(/[0-9]+/)?.[0];
-            if (snowflake) return this.client.channels.resolve(snowflake);
+            if (snowflake) return this.client.channels.resolve(snowflake) as Channel;
         }
     }
 
-    public parseTime(duration: number): String {
+    public parseTime(duration: number): string {
         let result = "";
 
         duration = Math.floor(duration / 1000);
@@ -88,9 +81,9 @@ class Global {
         return result;
     }
 
-    public limitString(string: string, limit: number): string {
+    public limitString(string: string, limit: number, tooLongMsg: string = "..."): string {
         if (string.length > limit) {
-            return string.substring(0, limit + 3) + "...";
+            return string.substring(0, limit + tooLongMsg.length) + tooLongMsg;
         } else {
             return string;
         }
@@ -99,7 +92,7 @@ class Global {
     public hasPermissions(
         channel: GuildChannel,
         permissions: PermissionResolvable[],
-        notifHere: (TextBasedChannels | CommandInteraction | ButtonInteraction | SelectMenuInteraction)
+        notifHere?: (TextBasedChannel | CommandInteraction | ButtonInteraction | SelectMenuInteraction)
     ): boolean {
         // Client member exists
         if (!channel.guild.me) throw new Error("Could not get channel.guild.me for permission checking");
@@ -127,7 +120,7 @@ class Global {
     }
 
     public isAboveRoles(
-        roles: Role[], notifHere: (TextBasedChannels | CommandInteraction | ButtonInteraction | SelectMenuInteraction)): boolean {
+        roles: Role[], notifHere?: (TextBasedChannel | CommandInteraction | ButtonInteraction | SelectMenuInteraction)): boolean {
         roles = roles.filter(role => !role.editable).sort((a, b) => b.position - a.position);
         if (roles.length === 0) return true;
         if (notifHere) {

@@ -10,10 +10,10 @@ const config: Config = {
 
     // Message type emojis and colors
     MSG_TYPES: {
-        SUCCESS: {EMOJI: "✅", COLOR: "#00FF00"},
-        INVALID: {EMOJI: "❌", COLOR: "#F88038"},
-        ERROR: {EMOJI: "⚠", COLOR: "#FF0000"},
-        TIME: {EMOJI: "⏱", COLOR: "#F88038"}
+        SUCCESS: { EMOJI: "✅", COLOR: "#00FF00" },
+        INVALID: { EMOJI: "❌", COLOR: "#F88038" },
+        ERROR: { EMOJI: "⚠", COLOR: "#FF0000" },
+        TIME: { EMOJI: "⏱", COLOR: "#F88038" }
     },
 
     CLIENT_OPTIONS: {

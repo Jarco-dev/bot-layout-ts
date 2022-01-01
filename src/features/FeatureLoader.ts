@@ -1,19 +1,15 @@
-import BaseFeature from "../utils/structures/BaseFeature";
 import { promises as fs } from "fs";
 import path from "path";
-import Client from "../index";
+import Base from "../utils/structures/Base";
+import BaseFeature from "../utils/structures/BaseFeature";
 
-class FeatureLoader {
-    public client: typeof Client;
-    public logger: typeof Client.logger;
-    public config: typeof Client.config;
+class FeatureLoader extends Base {
     public features: { [key: string]: BaseFeature };
     public path: string;
 
-    constructor(client: typeof Client) {
-        this.client = client;
-        this.logger = client.logger;
-        this.config = client.config;
+    constructor() {
+        super();
+
         this.features = {};
         this.path = path.join(__dirname, "../features/");
     }

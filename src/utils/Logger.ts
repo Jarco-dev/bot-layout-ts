@@ -1,13 +1,13 @@
 import moment from "moment";
-import type Client from "../index";
 import type { LogLevel } from "../types";
+import Base from "./structures/Base";
 
-class Logger {
+class Logger extends Base {
     private level: 0 | 1 | 2 | 3 | 4;
-    private botLogger: typeof Client.botLogger;
 
-    constructor(client: typeof Client) {
-        this.botLogger = client.botLogger;
+    constructor() {
+        super();
+
         this.level = 0;
     }
 
@@ -43,7 +43,6 @@ class Logger {
         if (this.level <= 4) {
             const args = Array.prototype.slice.call(arguments);
             console.error("\x1b[31m%s\x1b[0m", `[${this._getDateTimeString()}] [ERROR]`, args);
-            if (args.length >= 2) this.botLogger.error(args[0], args[1].stack);
         }
     }
 

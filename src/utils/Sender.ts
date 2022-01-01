@@ -1,20 +1,15 @@
-import type Client from "../index";
-import type { SenderMessageOptions, SenderReplyOptions } from "../types";
-import type { ButtonInteraction, CommandInteraction, InteractionReplyOptions, MessageComponentInteraction, MessageOptions, ReplyMessageOptions, SelectMenuInteraction, Snowflake, TextBasedChannels, User } from "discord.js";
+import type { ButtonInteraction, CacheType, CommandInteraction, GuildCacheMessage, InteractionReplyOptions, MessageComponentInteraction, MessageOptions, ReplyMessageOptions, SelectMenuInteraction, Snowflake, TextBasedChannel, User } from "discord.js";
 import { Message, MessageEmbed } from "discord.js";
+import type { SenderMessageOptions, SenderReplyOptions } from "../types";
+import Base from "./structures/Base";
 
-class Sender {
-    private client: typeof Client;
-    private logger: typeof Client.logger;
-    private config: typeof Client.config;
+class Sender extends Base {
 
-    constructor(client: typeof Client) {
-        this.client = client;
-        this.logger = client.logger;
-        this.config = client.config;
+    constructor() {
+        super();
     }
 
-    public reply(
+    public async reply(
         i: (CommandInteraction | ButtonInteraction | SelectMenuInteraction | MessageComponentInteraction),
         payload: InteractionReplyOptions,
         options?: SenderReplyOptions
@@ -40,14 +35,21 @@ class Sender {
         if (options.delTime) payload.fetchReply = true;
 
         // Send the message
-        return i[(options.editReply) ? "editReply" : "reply"](payload)
-            .then(async msg => {
-                // Message delete timeout
-                if (options.delTime && msg instanceof Message && msg.deletable) {
-                    setTimeout(() => msg.delete().catch(() => {}), options.delTime);
-                }
-            });
+        let msg: GuildCacheMessage<CacheType> | void;
+        if (options.method === "EDIT_REPLY") msg = await i.editReply(payload);
+        else if (options.method === "UPDATE") {
+            if (i.isMessageComponent()) msg = await i.update(payload);
+            else throw new Error("the UPDATE method can only be used on MessageComponentInteractions")
+        } else msg = await i.reply(payload);
 
+        if (options.delTime && msg instanceof Message && msg.deletable) {
+            // Delete timeout
+            const msg1 = msg;
+            setTimeout(() => msg1.delete().catch(() => {}), options.delTime);
+
+            // Return message
+            return msg;
+        }
     }
 
     public send(
@@ -60,7 +62,7 @@ class Sender {
     }
 
     public async msgChannel(
-        channel: (TextBasedChannels | Snowflake),
+        channel: (TextBasedChannel | Snowflake),
         payload: MessageOptions,
         options?: SenderMessageOptions
     ): Promise<void | Message> {
@@ -79,7 +81,7 @@ class Sender {
         }
     }
 
-    private _sendMsg(channel: TextBasedChannels, payload: (MessageOptions | ReplyMessageOptions), options?: SenderMessageOptions): Promise<void | Message> {
+    private _sendMsg(channel: TextBasedChannel, payload: (MessageOptions | ReplyMessageOptions), options?: SenderMessageOptions): Promise<void | Message> {
         // No options shortcut
         if (!options) return channel.send(payload);
 

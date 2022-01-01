@@ -1,5 +1,5 @@
+import { CommandInteraction, Message } from "discord.js";
 import BaseCommand from "../../utils/structures/BaseCommand";
-import { CommandInteraction } from "discord.js";
 
 class PingCommand extends BaseCommand {
     public rttEmoji: string;
@@ -47,7 +47,11 @@ class PingCommand extends BaseCommand {
                 // Send a pinging message
                 const pingingEmbed = this.global.embed()
                     .setTitle("Pinging...");
-                const reply = await this.sender.reply(i, { embeds: [pingingEmbed], ephemeral: true, fetchReply: true });
+                const reply = await this.sender.reply(i, {
+                    embeds: [pingingEmbed],
+                    ephemeral: true,
+                    fetchReply: true
+                }) as Message;
 
                 // Calculate the delay and edit the reply
                 const timeDiff = reply.createdTimestamp - i.createdTimestamp;
@@ -57,7 +61,7 @@ class PingCommand extends BaseCommand {
                         ${this.rttEmoji} **RTT**: ${timeDiff}ms
                         ${this.hbEmoji} **Heartbeat**: ${this.client.ws.ping}ms
                     `);
-                this.sender.reply(i, { embeds: [resultEmbed] }, { method: "editReply" });
+                this.sender.reply(i, { embeds: [resultEmbed] }, { method: "EDIT_REPLY" });
             }
         }
     }
