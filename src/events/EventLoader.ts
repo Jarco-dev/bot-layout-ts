@@ -1,14 +1,17 @@
 import { promises as fs } from "fs";
 import path from "path";
-import Base from "../utils/structures/Base";
+import Client from "../index";
 import BaseEvent from "../utils/structures/BaseEvent";
 
-class EventLoader extends Base {
+class EventLoader {
     public events: { [key: string]: BaseEvent };
     public path: string;
+    private client: typeof Client;
+    private logger: typeof Client.logger;
 
-    constructor() {
-        super();
+    constructor(client: typeof Client) {
+        this.client = client;
+        this.logger = client.logger;
 
         this.events = {};
         this.path = path.join(__dirname, "../events/");

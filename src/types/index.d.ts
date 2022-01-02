@@ -1,23 +1,23 @@
 import { ClientOptions, HexColorString, Snowflake } from "discord.js";
 
 export interface SecretConfig {
-    LOG_LEVEL: LogLevel,
-    CMD_LOAD_LEVEL: CommandLoadLevel,
-    CMD_DEV_GUILD: Snowflake
+    LOG_LEVEL: LogLevel;
+    CMD_LOAD_LEVEL: CommandLoadLevel;
+    CMD_DEV_GUILD: Snowflake;
 }
 
 export interface Config {
     COLORS: {
-        DEFAULT: HexColorString
+        DEFAULT: HexColorString;
     },
     MSG_TYPES: {
-        SUCCESS: { EMOJI: string, COLOR: HexColorString },
-        INVALID: { EMOJI: string, COLOR: HexColorString },
-        ERROR: { EMOJI: string, COLOR: HexColorString },
-        TIME: { EMOJI: string, COLOR: HexColorString }
+        SUCCESS: { EMOJI: string, COLOR: HexColorString };
+        INVALID: { EMOJI: string, COLOR: HexColorString };
+        ERROR: { EMOJI: string, COLOR: HexColorString };
+        TIME: { EMOJI: string, COLOR: HexColorString };
     },
-    CLIENT_OPTIONS: ClientOptions,
-    VERSION: string
+    CLIENT_OPTIONS: ClientOptions;
+    VERSION: string;
 }
 
 export interface SenderMessageOptions {
@@ -33,7 +33,7 @@ export type SenderMessageType =
     | "SUCCESS"
     | "INVALID"
     | "ERROR"
-    | "TIME"
+    | "TIME";
 
 export type SenderReplyMethod =
     | "REPLY"

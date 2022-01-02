@@ -1,11 +1,17 @@
-import Base from "./Base";
+import Client from "../../index";
 
-abstract class BaseFeature extends Base {
+abstract class BaseFeature {
     public name: string;
 
-    protected constructor(name: string) {
-        super();
+    public client = Client;
+    public prisma = Client.prisma;
+    public sConfig = Client.sConfig;
+    public config = Client.config;
+    public logger = Client.logger;
+    public sender = Client.sender;
+    public global = Client.global;
 
+    protected constructor(name: string) {
         this.name = name;
     }
 

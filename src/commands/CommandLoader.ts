@@ -2,15 +2,18 @@ import type { Snowflake } from "discord.js";
 import { promises as fs } from "fs";
 import path from "path";
 import type { CommandLoadLevel } from "../types";
-import Base from "../utils/structures/Base";
 import BaseCommand from "../utils/structures/BaseCommand";
+import Client from "../index";
 
-class CommandLoader extends Base {
+class CommandLoader {
     public commands: { [key: string]: BaseCommand };
     public path: string;
+    private client: typeof Client;
+    private logger: typeof Client.logger;
 
-    constructor() {
-        super();
+    constructor(client: typeof Client) {
+        this.client = client;
+        this.logger = client.logger;
 
         this.commands = {};
         this.path = path.join(__dirname, "../commands/");

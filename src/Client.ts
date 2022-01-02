@@ -14,11 +14,11 @@ class Client extends DiscordClient {
     public config = config;
     public logger = new Logger();
     public prisma = new PrismaClient();
-    public sender = new Sender();
-    public global = new Global();
-    public commandLoader = new CommandLoader();
-    public eventLoader = new EventLoader();
-    public featureLoader = new FeatureLoader();
+    public sender = new Sender(this);
+    public global = new Global(this);
+    public commandLoader = new CommandLoader(this);
+    public eventLoader = new EventLoader(this);
+    public featureLoader = new FeatureLoader(this);
 
     constructor() {
         super(config.CLIENT_OPTIONS);

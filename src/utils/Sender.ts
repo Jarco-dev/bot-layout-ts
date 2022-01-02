@@ -1,12 +1,15 @@
 import type { ButtonInteraction, CacheType, CommandInteraction, GuildCacheMessage, InteractionReplyOptions, MessageComponentInteraction, MessageOptions, ReplyMessageOptions, SelectMenuInteraction, Snowflake, TextBasedChannel, User } from "discord.js";
 import { Message, MessageEmbed } from "discord.js";
+import Client from "../index";
 import type { SenderMessageOptions, SenderReplyOptions } from "../types";
-import Base from "./structures/Base";
 
-class Sender extends Base {
+class Sender {
+    private client: typeof Client;
+    private config: typeof Client.config;
 
-    constructor() {
-        super();
+    constructor(client: typeof Client) {
+        this.client = client;
+        this.config = client.config;
     }
 
     public async reply(

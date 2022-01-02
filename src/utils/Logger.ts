@@ -1,13 +1,10 @@
 import moment from "moment";
 import type { LogLevel } from "../types";
-import Base from "./structures/Base";
 
-class Logger extends Base {
+class Logger {
     private level: 0 | 1 | 2 | 3 | 4;
 
     constructor() {
-        super();
-
         this.level = 0;
     }
 

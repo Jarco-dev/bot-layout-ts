@@ -1,11 +1,16 @@
 import type { ButtonInteraction, Channel, ChannelMention, CommandInteraction, Guild, GuildChannel, GuildMember, PermissionResolvable, Role, RoleMention, SelectMenuInteraction, Snowflake, TextBasedChannel, User, UserMention } from "discord.js";
 import { DMChannel, Interaction, MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu } from "discord.js";
-import Base from "./structures/Base";
+import Client from "../index";
 
-class Global extends Base {
+class Global {
+    private client: typeof Client;
+    private config: typeof Client.config;
+    private sender: typeof Client.sender;
 
-    constructor() {
-        super();
+    constructor(client: typeof Client) {
+        this.client = client;
+        this.config = client.config;
+        this.sender = client.sender;
     }
 
     public embed(): MessageEmbed {
@@ -87,6 +92,10 @@ class Global extends Base {
         } else {
             return string;
         }
+    }
+
+    public addNewLines(lines: string[]): string {
+        return lines.join("\n");
     }
 
     public hasPermissions(
