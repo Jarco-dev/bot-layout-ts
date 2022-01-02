@@ -1,5 +1,5 @@
 {
-    "name": "ferox-staff-bot",
+    "name": "bot-layout-ts",
     "version": "0.0.0",
     "description": "The typescript discord bot layout",
     "main": "dist/index.js",
