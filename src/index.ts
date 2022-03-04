@@ -1,15 +1,13 @@
-import dotenv from "dotenv";
 import Client from "./Client";
 
 const client = new Client();
-dotenv.config();
 
 // Fix console being ugly on pterodactyl
 console.log("\n");
 
 // Authorise the bot
 client.logger.info("Connecting to discord...");
-client.login(process.env.TOKEN);
+client.login(client.sConfig.DISCORD_BOT_TOKEN);
 
 export default client;
 

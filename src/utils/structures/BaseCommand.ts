@@ -1,6 +1,6 @@
-import type { ApplicationCommandOptionData, ApplicationCommandType, CommandInteraction, PermissionResolvable } from "discord.js";
+import type { ApplicationCommandOptionData, ApplicationCommandType, CommandInteraction } from "discord.js";
 import type { CommandStatus } from "../../types";
-import Client from "../../index";
+import client from "../../index";
 
 abstract class BaseCommand {
     public name: string;
@@ -9,18 +9,16 @@ abstract class BaseCommand {
     public options?: ApplicationCommandOptionData[];
     public defaultPermission?: boolean;
     public cooldown: number = 0;
-    public nsfw: boolean = false;
     public disableDm: boolean = false;
-    public botPermissions: PermissionResolvable[];
     public status: CommandStatus;
 
-    public client = Client;
-    public prisma = Client.prisma;
-    public sConfig = Client.sConfig;
-    public config = Client.config;
-    public logger = Client.logger;
-    public sender = Client.sender;
-    public global = Client.global;
+    public client = client;
+    public prisma = client.prisma;
+    public sConfig = client.sConfig;
+    public config = client.config;
+    public logger = client.logger;
+    public sender = client.sender;
+    public global = client.global;
 
     protected constructor(p: {
         name: string;
@@ -29,9 +27,7 @@ abstract class BaseCommand {
         options?: ApplicationCommandOptionData[];
         defaultPermission?: boolean;
         cooldown?: number;
-        nsfw?: boolean;
         disableDm?: boolean;
-        botPermissions?: PermissionResolvable[];
         status: CommandStatus;
     }) {
         this.name = p.name;
@@ -40,9 +36,7 @@ abstract class BaseCommand {
         this.options = p.options ?? undefined;
         this.defaultPermission = p.defaultPermission;
         this.cooldown = p.cooldown ?? 0;
-        this.nsfw = p.nsfw ?? false;
         this.disableDm = p.disableDm ?? false;
-        this.botPermissions = p.botPermissions ?? [];
         this.status = p.status;
     }
 

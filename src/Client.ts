@@ -4,13 +4,13 @@ import CommandLoader from "./commands/CommandLoader";
 import config from "./config";
 import EventLoader from "./events/EventLoader";
 import FeatureLoader from "./features/FeatureLoader";
-import type { SecretConfig } from "./types";
 import Global from "./utils/Global";
 import Logger from "./utils/Logger";
+import SecretConfig from "./utils/SecretConfig";
 import Sender from "./utils/Sender";
 
 class Client extends DiscordClient {
-    public sConfig = require("../secret/config") as SecretConfig;
+    public sConfig = new SecretConfig();
     public config = config;
     public logger = new Logger();
     public prisma = new PrismaClient();
@@ -25,6 +25,9 @@ class Client extends DiscordClient {
 
         // Logging
         this.logger.setLogLevel(this.sConfig.LOG_LEVEL);
+
+        // SecretConfig
+        this.sConfig.validate(this.logger);
 
         // Database
         this.prisma.$connect().catch((err: unknown) => this.logger.error("Error while connecting to database", err));

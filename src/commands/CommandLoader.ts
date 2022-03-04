@@ -1,9 +1,9 @@
 import type { Snowflake } from "discord.js";
+import type { CommandLoadLevel } from "../types";
+import type Client from "../index";
 import { promises as fs } from "fs";
 import path from "path";
-import type { CommandLoadLevel } from "../types";
 import BaseCommand from "../utils/structures/BaseCommand";
-import Client from "../index";
 
 class CommandLoader {
     public commands: { [key: string]: BaseCommand };
@@ -49,14 +49,16 @@ class CommandLoader {
         const data = [];
         for (const commandName in this.commands) {
             const command = this.commands[commandName];
-            if ((status !== "ALL" && command.status !== status) || command.status === "DISABLED") continue;
-            data.push({
-                name: command.name,
-                description: command.description,
-                type: command.type,
-                options: command.options,
-                defaultPermission: command.defaultPermission
-            });
+            if (command.status === status) {
+                data.push({
+                    name: command.name,
+                    description: command.description,
+                    type: command.type,
+                    options: command.options,
+                    defaultPermission: command.defaultPermission
+                });
+            }
+
         }
 
         ((guildId) ? this.client.application!.commands.set(data, guildId) : this.client.application!.commands.set(data))

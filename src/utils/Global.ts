@@ -1,6 +1,6 @@
 import type { ButtonInteraction, Channel, ChannelMention, CommandInteraction, Guild, GuildChannel, GuildMember, PermissionResolvable, Role, RoleMention, SelectMenuInteraction, Snowflake, TextBasedChannel, User, UserMention } from "discord.js";
+import type Client from "../index";
 import { DMChannel, Interaction, MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu } from "discord.js";
-import Client from "../index";
 
 class Global {
     private client: typeof Client;

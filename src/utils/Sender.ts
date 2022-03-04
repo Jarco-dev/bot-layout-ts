@@ -1,7 +1,7 @@
 import type { ButtonInteraction, CacheType, CommandInteraction, GuildCacheMessage, InteractionReplyOptions, MessageComponentInteraction, MessageOptions, ReplyMessageOptions, SelectMenuInteraction, Snowflake, TextBasedChannel, User } from "discord.js";
-import { Message, MessageEmbed } from "discord.js";
-import Client from "../index";
 import type { SenderMessageOptions, SenderReplyOptions } from "../types";
+import type Client from "../index";
+import { Message, MessageEmbed } from "discord.js";
 
 class Sender {
     private client: typeof Client;
@@ -22,8 +22,8 @@ class Sender {
 
         // Handle the bot message type
         if (options.msgType) {
-            // Cancel message type reply if there is a embed
-            if (payload.embeds) throw new Error("the provided embed would be overwritten by the msgType");
+            // Cancel message type reply if there is an embed
+            if (payload.embeds) throw new Error("The provided embed would be overwritten by the msgType");
 
             // Create and send the embed
             const embed = new MessageEmbed()
@@ -42,7 +42,7 @@ class Sender {
         if (options.method === "EDIT_REPLY") msg = await i.editReply(payload);
         else if (options.method === "UPDATE") {
             if (i.isMessageComponent()) msg = await i.update(payload);
-            else throw new Error("the UPDATE method can only be used on MessageComponentInteractions")
+            else throw new Error("The UPDATE method can only be used on MessageComponentInteractions")
         } else msg = await i.reply(payload);
 
         if (options.delTime && msg instanceof Message && msg.deletable) {
@@ -90,8 +90,8 @@ class Sender {
 
         // Handle the bot message type
         if (options.msgType) {
-            // Cancel message type reply if there is a embed
-            if (payload.embeds) throw new Error("the provided embed would be overwritten by the msgType");
+            // Cancel message type reply if there is an embed
+            if (payload.embeds) throw new Error("The provided embed would be overwritten by the msgType");
 
             // Create and send the embed
             const embed = new MessageEmbed()

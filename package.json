@@ -4,28 +4,24 @@
     "description": "The typescript discord bot layout",
     "main": "dist/index.js",
     "scripts": {
-        "build": "npm run clean && tsc",
-        "clean": "rimraf dist",
+        "build": "rimraf dist && tsc",
         "dev": "nodemon --watch \"src/**\" --ext \"ts\" --exec \"ts-node src/index.ts\"",
         "start": "node dist/index.js"
     },
-    "prisma": {
-        "schema": "./prisma/schema.prisma"
-    },
     "author": "Jarco-dev",
     "dependencies": {
-        "@prisma/client": "^3.7.0",
-        "discord.js": "^13.5.0",
+        "@prisma/client": "^3.10.0",
+        "discord.js": "^13.6.0",
         "dotenv": "^10.0.0",
         "moment": "^2.29.1"
     },
     "devDependencies": {
-        "@types/node": "^17.0.5",
+        "@types/node": "^17.0.21",
         "copyfiles": "^2.4.1",
         "nodemon": "^2.0.15",
-        "prisma": "^3.7.0",
+        "prisma": "^3.10.0",
         "rimraf": "^3.0.2",
-        "ts-node": "^10.4.0",
-        "typescript": "^4.5.4"
+        "ts-node": "^10.6.0",
+        "typescript": "^4.6.2"
     }
 }

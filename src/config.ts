@@ -1,5 +1,5 @@
-import { Intents } from "discord.js";
 import type { Config } from "./types";
+import { Intents } from "discord.js";
 
 const config: Config = {
 
@@ -16,6 +16,7 @@ const config: Config = {
         TIME: { EMOJI: "⏱", COLOR: "#F88038" }
     },
 
+    // Discord client options
     CLIENT_OPTIONS: {
         intents: [
             Intents.FLAGS.DIRECT_MESSAGES,
@@ -36,6 +37,7 @@ const config: Config = {
         ]
     },
 
+    // Bot version (acquired from package.json)
     VERSION: require("../package.json").version
 }
 

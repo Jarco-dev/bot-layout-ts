@@ -1,5 +1,6 @@
-import { Collection, Interaction, TextChannel } from "discord.js";
-import Client from "../../index";
+import type { Interaction } from "discord.js";
+import type Client from "../../index";
+import { DMChannel } from "discord.js";
 import BaseEvent from "../../utils/structures/BaseEvent";
 
 class InteractionCreateEvent extends BaseEvent {
@@ -22,38 +23,13 @@ class InteractionCreateEvent extends BaseEvent {
                 if (!command) throw new Error(`The ${i?.commandName} command could not be found`);
 
                 // Process command options
-                if (i.channel instanceof TextChannel) {
-                    const channelPerms = i.channel.permissionsFor(this.client.user!.id) ?? new Collection();
-
-                    // bot permissions
-                    for (let perm in command.botPermissions) {
-                        if (!channelPerms.has(command.botPermissions[perm])) {
-                            if (channelPerms.has("VIEW_CHANNEL") && channelPerms.has("SEND_MESSAGES") && channelPerms.has("EMBED_LINKS")) {
-                                this.sender.reply(i, {
-                                    content: `The bot doesn't have the \`${command.botPermissions[perm]}\` permission in ${i.channel}, Please contact a server admin!`
-                                }, { msgType: "INVALID" });
-                            }
-                            return;
-                        }
-                    }
-
-                    // nsfw
-                    if (command.nsfw && i.channel.nsfw) {
-                        if (!channelPerms.has("VIEW_CHANNEL") && channelPerms.has("SEND_MESSAGES") && channelPerms.has("EMBED_LINKS")) {
-                            this.sender.reply(i, { content: "This command can only be used in **nsfw** channels!" }, {
-                                delTime: 5000,
-                                msgType: "INVALID"
-                            });
-                        }
-                        return;
-                    }
-                } else {
+                if (i.channel instanceof DMChannel) {
                     // disableDm
                     if (command.disableDm) {
                         this.sender.reply(i, { content: "This command is disabled outside of servers!" }, {
                             delTime: 5000,
                             msgType: "INVALID"
-                        });
+                        }).catch(() => { });
                         return;
                     }
                 }

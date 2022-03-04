@@ -1,4 +1,4 @@
-import { ClientOptions, HexColorString, Snowflake } from "discord.js";
+import type { ClientOptions, HexColorString, Snowflake } from "discord.js";
 
 export interface SecretConfig {
     LOG_LEVEL: LogLevel;
@@ -47,9 +47,7 @@ export type CommandStatus =
 
 export type CommandLoadLevel =
     | "ENABLED"
-    | "DISABLED"
-    | "DEV"
-    | "ALL";
+    | "DEV";
 
 export type LogLevel =
     | "VERBOSE"

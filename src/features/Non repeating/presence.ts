@@ -5,7 +5,7 @@ class PresenceFeature extends BaseFeature {
         super("presence");
     }
 
-    start() {
+    start(): void {
         this.client.user!.setPresence({
             status: "online",
             activities: [{

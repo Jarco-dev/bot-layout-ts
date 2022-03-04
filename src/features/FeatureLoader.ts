@@ -1,6 +1,6 @@
+import type Client from "../index";
 import { promises as fs } from "fs";
 import path from "path";
-import Client from "../index";
 import BaseFeature from "../utils/structures/BaseFeature";
 
 class FeatureLoader {
