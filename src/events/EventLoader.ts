@@ -12,7 +12,6 @@ class EventLoader {
     constructor(client: typeof Client) {
         this.client = client;
         this.logger = client.logger;
-
         this.events = {};
         this.path = path.join(__dirname, "../events/");
     }

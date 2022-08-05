@@ -10,7 +10,6 @@ class FeatureLoader {
 
     constructor(client: typeof Client) {
         this.logger = client.logger;
-
         this.features = {};
         this.path = path.join(__dirname, "../features/");
     }

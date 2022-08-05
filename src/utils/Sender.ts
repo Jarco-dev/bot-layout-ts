@@ -1,7 +1,20 @@
-import type { ButtonInteraction, CacheType, CommandInteraction, GuildCacheMessage, InteractionReplyOptions, MessageComponentInteraction, MessageOptions, ReplyMessageOptions, SelectMenuInteraction, Snowflake, TextBasedChannel, User } from "discord.js";
-import type { SenderMessageOptions, SenderReplyOptions } from "../types";
+import type {
+    ButtonInteraction,
+    CommandInteraction,
+    InteractionReplyOptions,
+    InteractionResponse,
+    InteractionUpdateOptions,
+    MessageComponentInteraction,
+    MessageOptions,
+    ReplyMessageOptions,
+    SelectMenuInteraction,
+    Snowflake,
+    TextBasedChannel,
+    User
+} from "discord.js";
+import { EmbedBuilder, Message, ModalSubmitInteraction } from "discord.js";
 import type Client from "../index";
-import { Message, MessageEmbed } from "discord.js";
+import type { SenderMessageOptions, SenderReplyOptions } from "../types";
 
 class Sender {
     private client: typeof Client;
@@ -12,13 +25,44 @@ class Sender {
         this.config = client.config;
     }
 
+
     public async reply(
-        i: (CommandInteraction | ButtonInteraction | SelectMenuInteraction | MessageComponentInteraction),
+        i: ButtonInteraction | SelectMenuInteraction | MessageComponentInteraction | ModalSubmitInteraction,
+        payload: InteractionUpdateOptions & { fetchReply: true },
+        options: SenderReplyOptions & { method: "UPDATE" }
+    ): Promise<void | Message>
+    public async reply(
+        i: CommandInteraction | ButtonInteraction | SelectMenuInteraction | MessageComponentInteraction | ModalSubmitInteraction,
+        payload: InteractionReplyOptions & { fetchReply: true },
+        options: SenderReplyOptions & ({ method: "REPLY" } | { method: "EDIT_REPLY" })
+    ): Promise<void | Message>
+    public async reply(
+        i: ButtonInteraction | SelectMenuInteraction | MessageComponentInteraction | ModalSubmitInteraction,
+        payload: InteractionUpdateOptions,
+        options: SenderReplyOptions & { method: "UPDATE" }
+    ): Promise<void | InteractionResponse>
+    public async reply(
+        i: CommandInteraction | ButtonInteraction | SelectMenuInteraction | MessageComponentInteraction | ModalSubmitInteraction,
+        payload: InteractionReplyOptions,
+        options: SenderReplyOptions & ({ method: "REPLY" } | { method: "EDIT_REPLY" })
+    ): Promise<void | InteractionResponse>
+    public async reply(
+        i: CommandInteraction | ButtonInteraction | SelectMenuInteraction | MessageComponentInteraction | ModalSubmitInteraction,
+        payload: InteractionReplyOptions & { fetchReply: true },
+        options?: SenderReplyOptions
+    ): Promise<void | Message>
+    public async reply(
+        i: CommandInteraction | ButtonInteraction | SelectMenuInteraction | MessageComponentInteraction | ModalSubmitInteraction,
         payload: InteractionReplyOptions,
         options?: SenderReplyOptions
-    ): Promise<void | Message> {
+    ): Promise<void | InteractionResponse>
+    public async reply(
+        i: CommandInteraction | ButtonInteraction | SelectMenuInteraction | MessageComponentInteraction | ModalSubmitInteraction,
+        payload: InteractionUpdateOptions | InteractionReplyOptions,
+        options?: SenderReplyOptions
+    ): Promise<void | Message | InteractionResponse> {
         // No options shortcut
-        if (!options) return i.reply(payload);
+        if (!options) return i.reply(payload as InteractionReplyOptions);
 
         // Handle the bot message type
         if (options.msgType) {
@@ -26,7 +70,7 @@ class Sender {
             if (payload.embeds) throw new Error("The provided embed would be overwritten by the msgType");
 
             // Create and send the embed
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setColor(this.config.MSG_TYPES[options.msgType].COLOR)
                 .setDescription(`${this.config.MSG_TYPES[options.msgType].EMOJI} **${payload.content}**`);
 
@@ -38,12 +82,12 @@ class Sender {
         if (options.delTime) payload.fetchReply = true;
 
         // Send the message
-        let msg: GuildCacheMessage<CacheType> | void;
-        if (options.method === "EDIT_REPLY") msg = await i.editReply(payload);
+        let msg: Message | InteractionResponse | void;
+        if (options.method === "EDIT_REPLY") msg = await i.editReply(payload as InteractionReplyOptions);
         else if (options.method === "UPDATE") {
-            if (i.isMessageComponent()) msg = await i.update(payload);
-            else throw new Error("The UPDATE method can only be used on MessageComponentInteractions")
-        } else msg = await i.reply(payload);
+            if (i.isMessageComponent()) msg = await i.update(payload as InteractionUpdateOptions);
+            else throw new Error("The UPDATE method can only be used on MessageComponentInteractions");
+        } else msg = await i.reply(payload as InteractionReplyOptions);
 
         if (options.delTime && msg instanceof Message && msg.deletable) {
             // Delete timeout
@@ -56,7 +100,7 @@ class Sender {
     }
 
     public send(
-        origin: (CommandInteraction | ButtonInteraction | SelectMenuInteraction | MessageComponentInteraction | Message),
+        origin: CommandInteraction | ButtonInteraction | SelectMenuInteraction | MessageComponentInteraction | ModalSubmitInteraction | Message,
         payload: MessageOptions,
         options?: SenderMessageOptions
     ): Promise<void | Message> | void {
@@ -72,7 +116,7 @@ class Sender {
         const snowflake = `${channel}`.match(/[0-9]+/)?.[0];
         if (snowflake) {
             const fetchedChannel = await this.client.channels.fetch(snowflake).catch(() => { });
-            if (fetchedChannel && fetchedChannel.isText()) return this._sendMsg(fetchedChannel, payload, options);
+            if (fetchedChannel && fetchedChannel.isTextBased()) return this._sendMsg(fetchedChannel, payload, options);
         }
     }
 
@@ -84,7 +128,7 @@ class Sender {
         }
     }
 
-    private _sendMsg(channel: TextBasedChannel, payload: (MessageOptions | ReplyMessageOptions), options?: SenderMessageOptions): Promise<void | Message> {
+    private _sendMsg(channel: TextBasedChannel, payload: MessageOptions | ReplyMessageOptions, options?: SenderMessageOptions): Promise<void | Message> {
         // No options shortcut
         if (!options) return channel.send(payload);
 
@@ -94,7 +138,7 @@ class Sender {
             if (payload.embeds) throw new Error("The provided embed would be overwritten by the msgType");
 
             // Create and send the embed
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setColor(this.config.MSG_TYPES[options.msgType].COLOR)
                 .setDescription(`${this.config.MSG_TYPES[options.msgType].EMOJI} **${payload.content}**`);
 

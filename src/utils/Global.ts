@@ -1,6 +1,24 @@
-import type { ButtonInteraction, Channel, ChannelMention, CommandInteraction, Guild, GuildChannel, GuildMember, PermissionResolvable, Role, RoleMention, SelectMenuInteraction, Snowflake, TextBasedChannel, User, UserMention } from "discord.js";
 import type Client from "../index";
-import { DMChannel, Interaction, MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu } from "discord.js";
+import type {
+    ActionRow,
+    ButtonInteraction,
+    Channel,
+    ChannelMention,
+    CommandInteraction,
+    Guild,
+    GuildChannel,
+    GuildMember,
+    MessageActionRowComponent,
+    PermissionResolvable,
+    Role,
+    RoleMention,
+    SelectMenuInteraction,
+    Snowflake,
+    TextBasedChannel,
+    User,
+    UserMention
+} from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ChannelType, ComponentType, EmbedBuilder, PermissionsBitField, SelectMenuBuilder } from "discord.js";
 
 class Global {
     private client: typeof Client;
@@ -13,27 +31,11 @@ class Global {
         this.sender = client.sender;
     }
 
-    public embed(): MessageEmbed {
-        return new MessageEmbed()
+    public defaultEmbed(): EmbedBuilder {
+        return new EmbedBuilder()
             .setColor(this.config.COLORS.DEFAULT)
             .setTimestamp()
             .setFooter({ text: `${this.client.user!.username} v${this.config.VERSION}` });
-    }
-
-    public emptyEmbed(): MessageEmbed {
-        return new MessageEmbed();
-    }
-
-    public button(): MessageButton {
-        return new MessageButton();
-    }
-
-    public actionRow(): MessageActionRow {
-        return new MessageActionRow();
-    }
-
-    public selectMenu(): MessageSelectMenu {
-        return new MessageSelectMenu();
     }
 
     public async fetchUser(userId?: (Snowflake | UserMention | null | undefined)): Promise<User | void> {
@@ -60,35 +62,40 @@ class Global {
     public fetchChannel(channelId?: (Snowflake | ChannelMention | null | undefined)): Channel | null | undefined {
         if (channelId) {
             const snowflake = channelId.match(/[0-9]+/)?.[0];
-            if (snowflake) return this.client.channels.resolve(snowflake) as Channel;
+            if (snowflake) return this.client.channels.resolve(snowflake);
         }
     }
 
-    public parseTime(duration: number): string {
+    public parseTime(duration: number | bigint): string {
+        if (typeof duration === "bigint") duration = Number(duration);
         let result = "";
 
         duration = Math.floor(duration / 1000);
         let sec = duration % 60;
-        if (duration >= 1) result = sec + "s";
+        if (duration > 0 && sec > 0) result = sec + "s";
 
         duration = Math.floor(duration / 60);
         let min = duration % 60;
-        if (duration >= 1) result = min + "m " + result;
+        if (duration > 0 && min > 0) result = min + "m " + result;
 
         duration = Math.floor(duration / 60);
         let hour = duration % 24;
-        if (duration >= 1) result = hour + "h " + result;
+        if (duration > 0 && hour > 0) result = hour + "h " + result;
 
         duration = Math.floor(duration / 24);
-        let day = duration;
-        if (duration >= 1) result = day + "d " + result;
+        let day = duration % 365;
+        if (duration > 0 && day > 0) result = day + "d " + result;
+
+        duration = Math.floor(duration / 365);
+        let year = duration;
+        if (duration > 0 && year > 0) result = year + "y " + result;
 
         return result;
     }
 
-    public limitString(string: string, limit: number, tooLongMsg: string = "..."): string {
+    public limitString(string: string, limit: number): string {
         if (string.length > limit) {
-            return string.substring(0, limit + tooLongMsg.length) + tooLongMsg;
+            return string.substring(0, limit + 3) + "...";
         } else {
             return string;
         }
@@ -104,20 +111,21 @@ class Global {
         notifHere?: (TextBasedChannel | CommandInteraction | ButtonInteraction | SelectMenuInteraction)
     ): boolean {
         // Client member exists
-        if (!channel.guild.me) throw new Error("Could not get channel.guild.me for permission checking");
-        const perms = channel.permissionsFor(channel.guild.me);
+        if (!channel.guild.members.me) throw new Error("Could not get channel.guild.member.me for permission checking");
+        const perms = channel.permissionsFor(channel.guild.members.me);
         permissions = permissions.filter(perm => !perms.has(perm));
         if (permissions.length === 0) return true;
         if (notifHere) {
-            if (notifHere instanceof Interaction) {
+            if ("isAutocomplete" in notifHere) {
                 this.sender.reply(notifHere, {
                     content: `The bot is missing the \`${permissions.join("`, `")}\` permission(s) in ${channel}, Please contact a server admin!`
                 }, { msgType: "INVALID" });
             } else {
                 if (!notifHere.partial) {
-                    if (!(notifHere instanceof DMChannel)) {
-                        const notifChanPerms = notifHere.permissionsFor(channel.guild.me);
-                        if (!notifChanPerms.has("VIEW_CHANNEL") || !notifChanPerms.has("SEND_MESSAGES") || !notifChanPerms.has("EMBED_LINKS")) return false;
+                    if (notifHere.type !== ChannelType.DM) {
+                        const notifChanPerms = notifHere.permissionsFor(channel.guild.members.me);
+                        const { ViewChannel, SendMessages, EmbedLinks } = PermissionsBitField.Flags;
+                        if (!notifChanPerms.has(new PermissionsBitField([ViewChannel, SendMessages, EmbedLinks]))) return false;
                     }
                     this.sender.msgChannel(notifHere, {
                         content: `The bot is missing the \`${permissions.join("`, `")}\` permission(s) in ${channel}, Please contact a server admin!`
@@ -128,21 +136,21 @@ class Global {
         return false;
     }
 
-    public isAboveRoles(
-        roles: Role[], notifHere?: (TextBasedChannel | CommandInteraction | ButtonInteraction | SelectMenuInteraction)): boolean {
+    public isAboveRoles(roles: Role[], notifHere?: (TextBasedChannel | CommandInteraction | ButtonInteraction | SelectMenuInteraction)): boolean {
         roles = roles.filter(role => !role.editable).sort((a, b) => b.position - a.position);
         if (roles.length === 0) return true;
         if (notifHere) {
-            if (notifHere instanceof Interaction) {
+            if ("isAutocomplete" in notifHere) {
                 this.sender.reply(notifHere, {
                     content: `The bot is too low in the role hierarchy to manage the \`${roles.join("`, `")}\` role(s), Please contact a server admin!`
                 }, { msgType: "INVALID" });
             } else {
                 if (!notifHere.partial) {
-                    if (!(notifHere instanceof DMChannel)) {
-                        if (!notifHere.guild.me) throw new Error("Could not get channel.guild.me for permission checking");
-                        const notifChanPerms = notifHere.permissionsFor(notifHere.guild.me);
-                        if (!notifChanPerms.has("VIEW_CHANNEL") || !notifChanPerms.has("SEND_MESSAGES") || !notifChanPerms.has("EMBED_LINKS")) return false;
+                    if (notifHere.type !== ChannelType.DM) {
+                        if (!notifHere.guild.members.me) throw new Error("Could not get channel.guild.members.me for permission checking");
+                        const notifChanPerms = notifHere.permissionsFor(notifHere.guild.members.me);
+                        const { ViewChannel, SendMessages, EmbedLinks } = PermissionsBitField.Flags
+                        if (!notifChanPerms.has(new PermissionsBitField([ViewChannel, SendMessages, EmbedLinks]))) return false;
                     }
                     this.sender.msgChannel(notifHere, {
                         content: `The bot is too low in the role hierarchy to manage the \`${roles.join("`, `")}\` role(s), Please contact a server admin!`
@@ -151,6 +159,22 @@ class Global {
             }
         }
         return false;
+    }
+
+    public disableMessageComponents(components: ActionRow<MessageActionRowComponent>[]): ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>[] {
+        return components.reduce((a: ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>[], row) => {
+            const components = row.toJSON().components.reduce((a: (ButtonBuilder | SelectMenuBuilder)[], component) => {
+                let builder: (ButtonBuilder | SelectMenuBuilder) = (component.type === ComponentType.Button) ? ButtonBuilder.from(component) : SelectMenuBuilder.from(component);
+                builder.setDisabled(true);
+                a.push(builder);
+                return a;
+            }, []);
+            const disabledRow = (components[0].data.type === ComponentType.Button) ?
+                new ActionRowBuilder<ButtonBuilder>().addComponents(components as ButtonBuilder[]) :
+                new ActionRowBuilder<SelectMenuBuilder>().addComponents(components as SelectMenuBuilder[]);
+            a.push(disabledRow);
+            return a;
+        }, []);
     }
 }
 
