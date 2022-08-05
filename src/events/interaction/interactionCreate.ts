@@ -49,11 +49,11 @@ class InteractionCreateEvent extends BaseEvent {
                 // Run the command
                 try {
                     command.run(i);
-                } catch (err) {
+                } catch(err) {
                     this.logger.error(`Error while executing a command commandName: ${command.cmdData.name}${(i.inGuild()) ? ` guildId: ${i.guild!.id}` : ""}`, err);
                     this.sender.reply(i, { content: "Something went wrong while running the command, the command might have not worked fully!" }, { msgType: "ERROR" });
                 }
-            } catch (err) {
+            } catch(err) {
                 this.logger.error(`Error while going through command handler`, err);
                 this.sender.reply(i, { content: "Something went wrong, please try again" }, { msgType: "ERROR" });
             }

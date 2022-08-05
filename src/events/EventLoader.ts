@@ -34,7 +34,7 @@ class EventLoader {
                             this.events[event.name] = event;
                         }
 
-                    } catch (err) {
+                    } catch(err) {
                         this.logger.error(`Error while trying to load a event eventFile: ${file}`, err);
                     }
                 }

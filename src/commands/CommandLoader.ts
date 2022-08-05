@@ -34,7 +34,7 @@ class CommandLoader {
                             const command = new Command();
                             this.commands[command.cmdData.name] = command;
                         }
-                    } catch (err) {
+                    } catch(err) {
                         this.logger.error(`Error while trying to load a command commandFile: ${file}`, err);
                     }
                 }
