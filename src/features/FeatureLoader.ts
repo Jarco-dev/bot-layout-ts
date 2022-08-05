@@ -10,7 +10,6 @@ class FeatureLoader {
 
     constructor(client: typeof Client) {
         this.logger = client.logger;
-
         this.features = {};
         this.path = path.join(__dirname, "../features/");
     }
@@ -31,7 +30,7 @@ class FeatureLoader {
                             const feature = new Feature();
                             this.features[feature.name] = feature;
                         }
-                    } catch (err) {
+                    } catch(err) {
                         this.logger.error(`Error while trying to load a feature featureFile: ${file}`, err);
                     }
                 }
@@ -43,7 +42,7 @@ class FeatureLoader {
         for (const feature in this.features) {
             try {
                 this.features[feature].start();
-            } catch (err) {
+            } catch(err) {
                 this.logger.error(`Error while starting a feature feature: ${feature}`, err);
             }
         }

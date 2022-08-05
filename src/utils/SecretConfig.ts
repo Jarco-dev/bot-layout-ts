@@ -26,13 +26,13 @@ class SecretConfig {
 
         if (!this.LOG_LEVEL) {
             errors.push("LOG_LEVEL is required but not given");
-        } else if (!["VERBOSE","DEBUG","INFO","WARN","ERROR"].includes(this.LOG_LEVEL)) {
+        } else if (!["VERBOSE", "DEBUG", "INFO", "WARN", "ERROR"].includes(this.LOG_LEVEL)) {
             errors.push("LOG_LEVEL is a invalid value");
         }
 
         if (!this.CMD_LOAD_LEVEL) {
             errors.push("CMD_LOAD_LEVEL is required but not given");
-        } else if (!["ENABLED","DEV"].includes(this.CMD_LOAD_LEVEL)) {
+        } else if (!["ENABLED", "DEV"].includes(this.CMD_LOAD_LEVEL)) {
             errors.push("CMD_LOAD_LEVEL is a invalid value");
         }
 

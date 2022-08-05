@@ -14,7 +14,6 @@ class CommandLoader {
     constructor(client: typeof Client) {
         this.client = client;
         this.logger = client.logger;
-
         this.commands = {};
         this.path = path.join(__dirname, "../commands/");
     }
@@ -33,9 +32,9 @@ class CommandLoader {
                         const Command = require(path.join(this.path, `./${folder}/${file}`)).default;
                         if (Command.prototype instanceof BaseCommand) {
                             const command = new Command();
-                            this.commands[command.name] = command;
+                            this.commands[command.cmdData.name] = command;
                         }
-                    } catch (err) {
+                    } catch(err) {
                         this.logger.error(`Error while trying to load a command commandFile: ${file}`, err);
                     }
                 }
@@ -49,15 +48,7 @@ class CommandLoader {
         const data = [];
         for (const commandName in this.commands) {
             const command = this.commands[commandName];
-            if (command.status === status) {
-                data.push({
-                    name: command.name,
-                    description: command.description,
-                    type: command.type,
-                    options: command.options,
-                    defaultPermission: command.defaultPermission
-                });
-            }
+            if (command.status === status) data.push(command.cmdData);
 
         }
 

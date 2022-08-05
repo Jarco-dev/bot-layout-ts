@@ -1,15 +1,14 @@
-import client from "../../index";
+import Client from "../../index";
 
 abstract class BaseFeature {
     public name: string;
-
-    public client = client;
-    public prisma = client.prisma;
-    public sConfig = client.sConfig;
-    public config = client.config;
-    public logger = client.logger;
-    public sender = client.sender;
-    public global = client.global;
+    public client = Client;
+    public prisma = Client.prisma;
+    public sConfig = Client.sConfig;
+    public config = Client.config;
+    public logger = Client.logger;
+    public sender = Client.sender;
+    public global = Client.global;
 
     protected constructor(name: string) {
         this.name = name;

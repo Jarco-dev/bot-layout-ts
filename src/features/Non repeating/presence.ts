@@ -1,4 +1,5 @@
 import BaseFeature from "../../utils/structures/BaseFeature";
+import { ActivityType } from "discord.js";
 
 class PresenceFeature extends BaseFeature {
     constructor() {
@@ -9,7 +10,7 @@ class PresenceFeature extends BaseFeature {
         this.client.user!.setPresence({
             status: "online",
             activities: [{
-                type: "WATCHING",
+                type: ActivityType.Watching,
                 name: `${this.client.users.cache.size} users`
             }]
         });

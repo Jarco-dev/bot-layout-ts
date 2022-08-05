@@ -12,7 +12,6 @@ class EventLoader {
     constructor(client: typeof Client) {
         this.client = client;
         this.logger = client.logger;
-
         this.events = {};
         this.path = path.join(__dirname, "../events/");
     }
@@ -35,7 +34,7 @@ class EventLoader {
                             this.events[event.name] = event;
                         }
 
-                    } catch (err) {
+                    } catch(err) {
                         this.logger.error(`Error while trying to load a event eventFile: ${file}`, err);
                     }
                 }
