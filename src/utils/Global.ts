@@ -161,20 +161,16 @@ class Global {
         return false;
     }
 
-    public disableMessageComponents(components: ActionRow<MessageActionRowComponent>[]): ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>[] {
-        return components.reduce((a: ActionRowBuilder<ButtonBuilder | SelectMenuBuilder>[], row) => {
-            const components = row.toJSON().components.reduce((a: (ButtonBuilder | SelectMenuBuilder)[], component) => {
-                let builder: (ButtonBuilder | SelectMenuBuilder) = (component.type === ComponentType.Button) ? ButtonBuilder.from(component) : SelectMenuBuilder.from(component);
-                builder.setDisabled(true);
-                a.push(builder);
-                return a;
-            }, []);
-            const disabledRow = (components[0].data.type === ComponentType.Button) ?
-                new ActionRowBuilder<ButtonBuilder>().addComponents(components as ButtonBuilder[]) :
-                new ActionRowBuilder<SelectMenuBuilder>().addComponents(components as SelectMenuBuilder[]);
-            a.push(disabledRow);
+    public getMessageActionRowBuilder(actionRow: ActionRow<MessageActionRowComponent>): ActionRowBuilder<ButtonBuilder | SelectMenuBuilder> {
+        const components = actionRow.toJSON().components.reduce((a: (ButtonBuilder | SelectMenuBuilder)[], component) => {
+            let builder: (ButtonBuilder | SelectMenuBuilder) = (component.type === ComponentType.Button) ? ButtonBuilder.from(component) : SelectMenuBuilder.from(component);
+            a.push(builder);
             return a;
         }, []);
+
+        return (components[0].data.type === ComponentType.Button) ?
+            new ActionRowBuilder<ButtonBuilder>().addComponents(components as ButtonBuilder[]) :
+            new ActionRowBuilder<SelectMenuBuilder>().addComponents(components as SelectMenuBuilder[]);
     }
 }
 
