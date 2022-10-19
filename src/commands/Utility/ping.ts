@@ -16,7 +16,6 @@ class PingCommand extends BaseCommand {
                     .setDescription("Extra actions for the ping command")
                     .addChoices({ name: "Explain", value: "explain" })
                 ),
-            cooldown: 3000,
             status: "ENABLED"
         });
 

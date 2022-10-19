@@ -29,23 +29,6 @@ class InteractionCreateEvent extends BaseEvent {
                     (command.cmdData.type === ApplicationCommandType.Message && !i.isMessageContextMenuCommand())
                 ) throw new Error(`Command and interaction types don't match for ${i.commandName}`);
 
-                // Check user command cooldown
-                if (command.cooldown > 0) {
-                    const key: string = `${command.cmdData.name}_${i.user.id}`;
-                    if (this.cmdCooldown[key]) {
-                        const diff = this.cmdCooldown[key] - Date.now();
-                        const timeLeft = this.global.parseTime((diff >= 1000) ? diff : 1000);
-                        this.sender.reply(i, {
-                            content: `Please wait \`${timeLeft}\` and try again`,
-                            ephemeral: true
-                        }, { msgType: "TIME" });
-                        return;
-                    } else {
-                        this.cmdCooldown[key] = Date.now() + command.cooldown;
-                        setTimeout(() => delete this.cmdCooldown[key], command.cooldown);
-                    }
-                }
-
                 // Run the command
                 try {
                     command.run(i);

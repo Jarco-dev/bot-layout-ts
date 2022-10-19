@@ -19,11 +19,9 @@ abstract class BaseCommand {
     protected constructor(p: {
         cmdData: Pick<SlashCommandBuilder, "toJSON">;
         defaultPermission?: boolean;
-        cooldown?: number;
         status: CommandStatus;
     }) {
         this.cmdData = p.cmdData.toJSON();
-        this.cooldown = p.cooldown ?? 0;
         this.status = p.status;
     }
 
