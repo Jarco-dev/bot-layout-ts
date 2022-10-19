@@ -25,13 +25,19 @@ class FeatureLoader {
                 for (const file of files) {
                     // Load the feature
                     try {
-                        const Feature = require(path.join(this.path, `./${folder}/${file}`)).default;
+                        const Feature = require(path.join(
+                            this.path,
+                            `./${folder}/${file}`
+                        )).default;
                         if (Feature.prototype instanceof BaseFeature) {
                             const feature = new Feature();
                             this.features[feature.name] = feature;
                         }
-                    } catch(err) {
-                        this.logger.error(`Error while trying to load a feature featureFile: ${file}`, err);
+                    } catch (err) {
+                        this.logger.error(
+                            `Error while trying to load a feature featureFile: ${file}`,
+                            err
+                        );
                     }
                 }
             }
@@ -42,8 +48,11 @@ class FeatureLoader {
         for (const feature in this.features) {
             try {
                 this.features[feature].start();
-            } catch(err) {
-                this.logger.error(`Error while starting a feature feature: ${feature}`, err);
+            } catch (err) {
+                this.logger.error(
+                    `Error while starting a feature feature: ${feature}`,
+                    err
+                );
             }
         }
     }

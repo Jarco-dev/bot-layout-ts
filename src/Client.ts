@@ -30,7 +30,11 @@ class Client extends DiscordClient {
         this.sConfig.validate(this.logger);
 
         // Database
-        this.prisma.$connect().catch((err: unknown) => this.logger.error("Error while connecting to database", err));
+        this.prisma
+            .$connect()
+            .catch((err: unknown) =>
+                this.logger.error("Error while connecting to database", err)
+            );
 
         // Loaders
         this.commandLoader.loadAll();

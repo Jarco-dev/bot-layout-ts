@@ -9,13 +9,13 @@ export interface SecretConfig {
 export interface Config {
     COLORS: {
         DEFAULT: HexColorString;
-    },
+    };
     MSG_TYPES: {
-        SUCCESS: { EMOJI: string, COLOR: HexColorString };
-        INVALID: { EMOJI: string, COLOR: HexColorString };
-        ERROR: { EMOJI: string, COLOR: HexColorString };
-        TIME: { EMOJI: string, COLOR: HexColorString };
-    },
+        SUCCESS: { EMOJI: string; COLOR: HexColorString };
+        INVALID: { EMOJI: string; COLOR: HexColorString };
+        ERROR: { EMOJI: string; COLOR: HexColorString };
+        TIME: { EMOJI: string; COLOR: HexColorString };
+    };
     CLIENT_OPTIONS: ClientOptions;
     VERSION: string;
 }
@@ -29,29 +29,12 @@ export interface SenderReplyOptions extends SenderMessageOptions {
     method?: SenderReplyMethod;
 }
 
-export type SenderMessageType =
-    | "SUCCESS"
-    | "INVALID"
-    | "ERROR"
-    | "TIME";
+export type SenderMessageType = "SUCCESS" | "INVALID" | "ERROR" | "TIME";
 
-export type SenderReplyMethod =
-    | "REPLY"
-    | "EDIT_REPLY"
-    | "UPDATE";
+export type SenderReplyMethod = "REPLY" | "EDIT_REPLY" | "UPDATE";
 
-export type CommandStatus =
-    | "ENABLED"
-    | "DISABLED"
-    | "DEV";
+export type CommandStatus = "ENABLED" | "DISABLED" | "DEV";
 
-export type CommandLoadLevel =
-    | "ENABLED"
-    | "DEV";
+export type CommandLoadLevel = "ENABLED" | "DEV";
 
-export type LogLevel =
-    | "VERBOSE"
-    | "DEBUG"
-    | "INFO"
-    | "WARN"
-    | "ERROR";
+export type LogLevel = "VERBOSE" | "DEBUG" | "INFO" | "WARN" | "ERROR";

@@ -20,25 +20,54 @@ class InteractionCreateEvent extends BaseEvent {
             try {
                 // Get the corresponding command
                 const command = this.commands[i.commandName];
-                if (!command) throw new Error(`The ${i?.commandName} command could not be found`);
+                if (!command)
+                    throw new Error(
+                        `The ${i?.commandName} command could not be found`
+                    );
 
                 // Check for matching types
                 if (
-                    (command.cmdData.type === ApplicationCommandType.ChatInput && !i.isChatInputCommand()) ||
-                    (command.cmdData.type === ApplicationCommandType.User && !i.isUserContextMenuCommand()) ||
-                    (command.cmdData.type === ApplicationCommandType.Message && !i.isMessageContextMenuCommand())
-                ) throw new Error(`Command and interaction types don't match for ${i.commandName}`);
+                    (command.cmdData.type ===
+                        ApplicationCommandType.ChatInput &&
+                        !i.isChatInputCommand()) ||
+                    (command.cmdData.type === ApplicationCommandType.User &&
+                        !i.isUserContextMenuCommand()) ||
+                    (command.cmdData.type === ApplicationCommandType.Message &&
+                        !i.isMessageContextMenuCommand())
+                )
+                    throw new Error(
+                        `Command and interaction types don't match for ${i.commandName}`
+                    );
 
                 // Run the command
                 try {
                     command.run(i);
-                } catch(err) {
-                    this.logger.error(`Error while executing a command commandName: ${command.cmdData.name}${(i.inGuild()) ? ` guildId: ${i.guild!.id}` : ""}`, err);
-                    this.sender.reply(i, { content: "Something went wrong while running the command, the command might have not worked fully!" }, { msgType: "ERROR" });
+                } catch (err) {
+                    this.logger.error(
+                        `Error while executing a command commandName: ${
+                            command.cmdData.name
+                        }${i.inGuild() ? ` guildId: ${i.guild!.id}` : ""}`,
+                        err
+                    );
+                    this.sender.reply(
+                        i,
+                        {
+                            content:
+                                "Something went wrong while running the command, the command might have not worked fully!"
+                        },
+                        { msgType: "ERROR" }
+                    );
                 }
-            } catch(err) {
-                this.logger.error(`Error while going through command handler`, err);
-                this.sender.reply(i, { content: "Something went wrong, please try again" }, { msgType: "ERROR" });
+            } catch (err) {
+                this.logger.error(
+                    "Error while going through command handler",
+                    err
+                );
+                this.sender.reply(
+                    i,
+                    { content: "Something went wrong, please try again" },
+                    { msgType: "ERROR" }
+                );
             }
         }
     }

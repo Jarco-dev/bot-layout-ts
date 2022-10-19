@@ -2,7 +2,6 @@ import type { Config } from "./types";
 import { IntentsBitField } from "discord.js";
 
 const config: Config = {
-
     // Bot colors
     COLORS: {
         DEFAULT: "#F88038"
@@ -41,6 +40,6 @@ const config: Config = {
 
     // Bot version (acquired from package.json)
     VERSION: require("../package.json").version
-}
+};
 
 export default config;

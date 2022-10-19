@@ -1,11 +1,14 @@
-import type { CommandInteraction, SlashCommandBuilder } from "discord.js";
-import type { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types/v10";
+import type {
+    CommandInteraction,
+    RESTPostAPIApplicationCommandsJSONBody,
+    SlashCommandBuilder
+} from "discord.js";
 import type { CommandStatus } from "../../types";
 import Client from "../../index";
 
 abstract class BaseCommand {
     public cmdData: RESTPostAPIApplicationCommandsJSONBody;
-    public cooldown: number = 0;
+    public cooldown = 0;
     public status: CommandStatus;
 
     public client = Client;

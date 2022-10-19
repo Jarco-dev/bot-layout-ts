@@ -29,32 +29,59 @@ class CommandLoader {
                 for (const file of files) {
                     // Load the command
                     try {
-                        const Command = require(path.join(this.path, `./${folder}/${file}`)).default;
+                        const Command = require(path.join(
+                            this.path,
+                            `./${folder}/${file}`
+                        )).default;
                         if (Command.prototype instanceof BaseCommand) {
                             const command = new Command();
                             this.commands[command.cmdData.name] = command;
                         }
-                    } catch(err) {
-                        this.logger.error(`Error while trying to load a command commandFile: ${file}`, err);
+                    } catch (err) {
+                        this.logger.error(
+                            `Error while trying to load a command commandFile: ${file}`,
+                            err
+                        );
                     }
                 }
             }
         }
     }
 
-    async updateCommands(status: CommandLoadLevel, guildId?: Snowflake): Promise<void> {
-        if (!["ENABLED", "ALL", "DEV"].includes(status)) throw new Error("status is a invalid value");
+    async updateCommands(
+        status: CommandLoadLevel,
+        guildId?: Snowflake
+    ): Promise<void> {
+        if (!["ENABLED", "ALL", "DEV"].includes(status))
+            throw new Error("status is a invalid value");
         await this.client.application!.fetch();
         const data = [];
         for (const commandName in this.commands) {
             const command = this.commands[commandName];
             if (command.status === status) data.push(command.cmdData);
-
         }
 
-        ((guildId) ? this.client.application!.commands.set(data, guildId) : this.client.application!.commands.set(data))
-            .then(commands => this.logger.info(`Updated ${commands.size} application command(s) status: ${status} guild: ${(guildId) ? guildId : "None"}`))
-            .catch(err => this.logger.error(`Error while updating application command(s) status: ${status} guild: ${(guildId) ? guildId : "None"}`, err));
+        (guildId
+            ? this.client.application!.commands.set(data, guildId)
+            : this.client.application!.commands.set(data)
+        )
+            .then(commands =>
+                this.logger.info(
+                    `Updated ${
+                        commands.size
+                    } application command(s) status: ${status} guild: ${
+                        guildId ? guildId : "None"
+                    }`
+                )
+            )
+            .catch(err =>
+                this.logger.error(
+                    `Error while updating application command(s) status: ${status} guild: ${
+                        guildId ? guildId : "None"
+                    }`,
+                    err
+                )
+            );
     }
 }
 

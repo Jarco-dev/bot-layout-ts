@@ -12,10 +12,13 @@ client.login(client.sConfig.DISCORD_BOT_TOKEN);
 export default client;
 
 // Catch any uncaught errors
-process.on("uncaughtException", (err) => {
+process.on("uncaughtException", err => {
     client.logger.error("Uncaught exception in process#uncaughtException", err);
 });
 
-process.on("unhandledRejection", (err) => {
-    client.logger.error("Unhandled rejection in process#unhandledRejection", err);
+process.on("unhandledRejection", err => {
+    client.logger.error(
+        "Unhandled rejection in process#unhandledRejection",
+        err
+    );
 });

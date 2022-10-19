@@ -27,15 +27,20 @@ class EventLoader {
                 for (const file of files) {
                     // Load the event
                     try {
-                        const Event = require(path.join(this.path, `./${folder}/${file}`)).default;
+                        const Event = require(path.join(
+                            this.path,
+                            `./${folder}/${file}`
+                        )).default;
                         if (Event.prototype instanceof BaseEvent) {
                             const event = new Event();
                             this.client.on(event.name, event.run.bind(event));
                             this.events[event.name] = event;
                         }
-
-                    } catch(err) {
-                        this.logger.error(`Error while trying to load a event eventFile: ${file}`, err);
+                    } catch (err) {
+                        this.logger.error(
+                            `Error while trying to load a event eventFile: ${file}`,
+                            err
+                        );
                     }
                 }
             }

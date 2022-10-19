@@ -6,7 +6,9 @@ import "dotenv/config";
 class SecretConfig {
     public DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN as string;
     public DATABASE_URL = process.env.DATABASE_URL as string;
-    public SHADOW_DATABASE_URL = process.env.SHADOW_DATABASE_URL as string | undefined;
+    public SHADOW_DATABASE_URL = process.env.SHADOW_DATABASE_URL as
+        | string
+        | undefined;
     public LOG_LEVEL = process.env.LOG_LEVEL as LogLevel;
     public CMD_LOAD_LEVEL = process.env.CMD_LOAD_LEVEL as CommandLoadLevel;
     public CMD_DEV_GUILD = process.env.CMD_DEV_GUILD as Snowflake | undefined;
@@ -14,7 +16,7 @@ class SecretConfig {
     constructor() {}
 
     public validate(logger: Logger) {
-        const errors: string[] = []
+        const errors: string[] = [];
 
         if (!this.DISCORD_BOT_TOKEN) {
             errors.push("DISCORD_BOT_TOKEN is required but not given");
@@ -26,7 +28,11 @@ class SecretConfig {
 
         if (!this.LOG_LEVEL) {
             errors.push("LOG_LEVEL is required but not given");
-        } else if (!["VERBOSE", "DEBUG", "INFO", "WARN", "ERROR"].includes(this.LOG_LEVEL)) {
+        } else if (
+            !["VERBOSE", "DEBUG", "INFO", "WARN", "ERROR"].includes(
+                this.LOG_LEVEL
+            )
+        ) {
             errors.push("LOG_LEVEL is a invalid value");
         }
 
@@ -37,7 +43,9 @@ class SecretConfig {
         }
 
         if (this.CMD_LOAD_LEVEL === "DEV" && !this.CMD_DEV_GUILD) {
-            errors.push("CMD_DEV_GUILD is required when CMD_LOAD_LEVEL is set to DEV");
+            errors.push(
+                "CMD_DEV_GUILD is required when CMD_LOAD_LEVEL is set to DEV"
+            );
         }
 
         if (errors.length > 0) {
@@ -47,7 +55,7 @@ class SecretConfig {
                     return a;
                 }, [])
             );
-            process.exit(0);
+            process.exit(0); // eslint-disable-line
         }
     }
 }

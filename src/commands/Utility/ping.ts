@@ -11,10 +11,11 @@ class PingCommand extends BaseCommand {
             cmdData: new SlashCommandBuilder()
                 .setName("ping")
                 .setDescription("View the bots response time")
-                .addStringOption(option => option
-                    .setName("action")
-                    .setDescription("Extra actions for the ping command")
-                    .addChoices({ name: "Explain", value: "explain" })
+                .addStringOption(option =>
+                    option
+                        .setName("action")
+                        .setDescription("Extra actions for the ping command")
+                        .addChoices({ name: "Explain", value: "explain" })
                 ),
             status: "ENABLED"
         });
@@ -26,39 +27,52 @@ class PingCommand extends BaseCommand {
     async run(i: ChatInputCommandInteraction) {
         // Ping action
         switch (i?.options?.getString("action", false)) {
-
             // Explain
             case "explain": {
-                const explainEmbed = this.global.defaultEmbed()
+                const explainEmbed = this.global
+                    .defaultEmbed()
                     .setTitle("Ping explanation")
-                    .setDescription(this.global.addNewLines([
-                        `${this.rttEmoji} **RTT**: The delay between you sending the message and the bot replying`,
-                        `${this.hbEmoji} **Heartbeat**: The delay between the bot and the discord api servers`
-                    ]));
-                this.sender.reply(i, { embeds: [explainEmbed], ephemeral: true });
+                    .setDescription(
+                        this.global.addNewLines([
+                            `${this.rttEmoji} **RTT**: The delay between you sending the message and the bot replying`,
+                            `${this.hbEmoji} **Heartbeat**: The delay between the bot and the discord api servers`
+                        ])
+                    );
+                this.sender.reply(i, {
+                    embeds: [explainEmbed],
+                    ephemeral: true
+                });
                 break;
             }
 
             // Ping (default)
             default: {
                 // Send a pinging message
-                const pingingEmbed = this.global.defaultEmbed()
+                const pingingEmbed = this.global
+                    .defaultEmbed()
                     .setTitle("Pinging...");
-                const reply = await this.sender.reply(i, {
+                const reply = (await this.sender.reply(i, {
                     embeds: [pingingEmbed],
                     ephemeral: true,
                     fetchReply: true
-                }) as Message;
+                })) as Message;
 
                 // Calculate the delay and edit the reply
                 const timeDiff = reply.createdTimestamp - i.createdTimestamp;
-                const resultEmbed = this.global.defaultEmbed()
+                const resultEmbed = this.global
+                    .defaultEmbed()
                     .setTitle("Ping result")
-                    .setDescription(this.global.addNewLines([
-                        `${this.rttEmoji} **RTT**: ${timeDiff}ms`,
-                        `{this.hbEmoji} **Heartbeat**: ${this.client.ws.ping}ms`
-                    ]));
-                this.sender.reply(i, { embeds: [resultEmbed] }, { method: "EDIT_REPLY" });
+                    .setDescription(
+                        this.global.addNewLines([
+                            `${this.rttEmoji} **RTT**: ${timeDiff}ms`,
+                            `{this.hbEmoji} **Heartbeat**: ${this.client.ws.ping}ms`
+                        ])
+                    );
+                this.sender.reply(
+                    i,
+                    { embeds: [resultEmbed] },
+                    { method: "EDIT_REPLY" }
+                );
             }
         }
     }
