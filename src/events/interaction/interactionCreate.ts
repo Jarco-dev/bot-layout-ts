@@ -4,14 +4,12 @@ import Client from "../../index";
 import BaseEvent from "../../utils/structures/BaseEvent";
 
 class InteractionCreateEvent extends BaseEvent {
-    public cmdCooldown: { [key: string]: number };
     private readonly commands: typeof Client.commandLoader.commands;
 
     constructor() {
         super("interactionCreate");
 
         this.commands = this.client.commandLoader.commands;
-        this.cmdCooldown = {};
     }
 
     public async run(i: BaseInteraction): Promise<void> {
