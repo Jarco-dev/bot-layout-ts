@@ -5,7 +5,15 @@
         "esModuleInterop": true,
         "target": "ES2021",
         "rootDir": ".",
-        "outDir": "dist"
+        "outDir": "dist",
+        "baseUrl": ".",
+        "skipLibCheck": true,
+        "paths": {
+            "@/interactions/*": ["src/interactions/*"],
+            "@/classes": ["src/classes/index.ts"],
+            "@/structures": ["src/classes/structures/index.ts"],
+            "@/types": ["src/types/index.d.ts"]
+        }
     },
     "include": [
         "src/**/*"
