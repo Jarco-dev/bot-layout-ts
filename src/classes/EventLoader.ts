@@ -12,9 +12,9 @@ export class EventLoader {
         this.path = path.join(process.cwd(), "src", "events");
     }
 
-    public loadAllHandlers(): void {
+    public async loadAllHandlers(): Promise<void> {
         // Get all the folders
-        const folders = fs.readdirSync(this.path);
+        const folders = await fs.promises.readdir(this.path);
         for (const folder of folders) {
             // Load the events if it's a folder
             if (fs.lstatSync(path.join(this.path, folder)).isDirectory()) {

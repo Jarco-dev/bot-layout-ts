@@ -1,7 +1,7 @@
 import * as process from "process";
+import cron from "node-cron";
 import path from "path";
 import fs from "fs";
-import cron from "node-cron";
 import { Client } from "@/classes";
 import { Task as TaskStructure } from "@/structures";
 
@@ -15,15 +15,17 @@ export class TaskLoader {
     constructor(client: Client) {
         this.client = client;
         this.tasks = {};
-        this.path = path.join(process.cwd(), "src", "tasks", "tasks");
+        this.path = path.join(process.cwd(), "src", "tasks");
     }
 
-    public loadAllTasks(): void {
+    public async loadAllTasks(): Promise<void> {
         // Get all the tasks
-        const items = fs.readdirSync(this.path);
+        const items = await fs.promises.readdir(this.path);
         for (const item of items) {
             // Skip the item if it's a folder
-            if (fs.lstatSync(item).isDirectory()) continue;
+            if (fs.lstatSync(path.join(this.path, item)).isDirectory()) {
+                continue;
+            }
 
             // Load the task
             try {
@@ -43,10 +45,12 @@ export class TaskLoader {
                     } else {
                         this.tasks[task.cronExpression] = [task];
                     }
-                }
 
-                // Log loaded message
-                this.client.logger.debug(`[TaskHandler] ${item} task loaded`);
+                    // Log loaded message
+                    this.client.logger.debug(
+                        `[TaskHandler] ${item} task loaded`
+                    );
+                }
             } catch (err) {
                 this.client.logger.error(
                     `Error while trying to load timer task file ${item}`,
@@ -69,7 +73,8 @@ export class TaskLoader {
                             task.run();
                         } catch (err) {
                             this.client.logger.error(
-                                `Error while running ${task.name}`
+                                `Error while running ${task.name}`,
+                                err
                             );
                         }
                     }
