@@ -8,7 +8,7 @@ import { Task as TaskStructure } from "@/structures";
 export class TaskLoader {
     private client: Client;
     public tasks: {
-        [cronExpression: string]: { fileName: string; class: TaskStructure }[];
+        [cronExpression: string]: TaskStructure[];
     };
     public path: string;
 
@@ -63,10 +63,13 @@ export class TaskLoader {
                 cron.schedule(cronExpression, () => {
                     for (const task of tasks) {
                         try {
-                            task.class.run();
+                            this.client.logger.verbose(
+                                `[TaskHandler] Running ${task.name}`
+                            );
+                            task.run();
                         } catch (err) {
                             this.client.logger.error(
-                                `Error while running task file ${task.fileName}`
+                                `Error while running ${task.name}`
                             );
                         }
                     }

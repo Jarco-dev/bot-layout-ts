@@ -17,8 +17,8 @@ export class EventLoader {
         const folders = fs.readdirSync(this.path);
         for (const folder of folders) {
             // Load the events if it's a folder
-            if (fs.lstatSync(this.path + folder).isDirectory()) {
-                const files = fs.readdirSync(this.path + folder);
+            if (fs.lstatSync(path.join(this.path, folder)).isDirectory()) {
+                const files = fs.readdirSync(path.join(this.path, folder));
                 // Go through all the event files
                 for (const file of files) {
                     // Load the event
@@ -26,7 +26,8 @@ export class EventLoader {
                         // Require EventHandler file
                         const EventHandler = require(path.join(
                             this.path,
-                            `./${folder}/${file}`
+                            folder,
+                            file
                         )).default;
 
                         // Validate that it's a EventHandler class
@@ -39,8 +40,11 @@ export class EventLoader {
                             continue;
                         }
 
-                        // Bind EventHandler
+                        // Get EventHandler & is enabled
                         const eventHandler = new EventHandler();
+                        if (!eventHandler.enabled) continue;
+
+                        // Bind event handler
                         this.client.on(
                             eventHandler.name,
                             eventHandler.run.bind(eventHandler)

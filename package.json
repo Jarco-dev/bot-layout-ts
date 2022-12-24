@@ -9,14 +9,12 @@
     "scripts": {
         "lint": "gts lint",
         "fix": "gts fix",
-        "build": "gts clean && tsc --project tsconfig.json && tsc --project tsconfig.scripts.json",
-        "build:bot": "gts clean && tsc --project tsconfig.json",
-        "build:scripts": "gts clean && tsc --project tsconfig.scripts.json",
-        "start": "node dist/src/index.js",
-        "dev": "nodemon --watch \"src/**\" --ext \"ts\" --exec \"ts-node src/index.ts\"",
-        "new:task": "node dist/scripts/task.js",
-        "new:event": "node dist/scripts/event.js",
-        "new:interaction": "node dist/scripts/interaction.js"
+        "build": "gts clean && tsc --project tsconfig.json && tsc-alias",
+        "start": "node dist/index.js",
+        "dev": "nodemon --watch \"src/**\" --ext \"ts\" --exec \"ts-node -r tsconfig-paths/register ./src/index.ts\"",
+        "new:task": "ts-node scripts/task.ts",
+        "new:event": "ts-node scripts/event.ts",
+        "new:interaction": "ts-node scripts/interaction.ts"
     },
     "author": "Jarco-dev",
     "dependencies": {
@@ -37,6 +35,8 @@
         "nodemon": "^2.0.20",
         "prisma": "^4.8.0",
         "ts-node": "^10.9.1",
+        "tsc-alias": "^1.8.2",
+        "tsconfig-paths": "^4.1.1",
         "typescript": "^4.9.4"
     }
 }

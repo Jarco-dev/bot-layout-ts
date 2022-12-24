@@ -1,6 +1,5 @@
-import type { CommandLoadLevel, LogLevel } from "@/types";
-import type { Snowflake } from "discord.js";
-import type { Logger } from "./Logger";
+import type { LogLevel } from "@/types";
+import type { Logger } from "@/classes";
 import "dotenv/config";
 
 export class SecretConfig {
@@ -10,8 +9,6 @@ export class SecretConfig {
         | string
         | undefined;
     public LOG_LEVEL = process.env.LOG_LEVEL as LogLevel;
-    public CMD_LOAD_LEVEL = process.env.CMD_LOAD_LEVEL as CommandLoadLevel;
-    public CMD_DEV_GUILD = process.env.CMD_DEV_GUILD as Snowflake | undefined;
 
     constructor() {}
 
@@ -34,18 +31,6 @@ export class SecretConfig {
             )
         ) {
             errors.push("LOG_LEVEL is a invalid value");
-        }
-
-        if (!this.CMD_LOAD_LEVEL) {
-            errors.push("CMD_LOAD_LEVEL is required but not given");
-        } else if (!["ENABLED", "DEV"].includes(this.CMD_LOAD_LEVEL)) {
-            errors.push("CMD_LOAD_LEVEL is a invalid value");
-        }
-
-        if (this.CMD_LOAD_LEVEL === "DEV" && !this.CMD_DEV_GUILD) {
-            errors.push(
-                "CMD_DEV_GUILD is required when CMD_LOAD_LEVEL is set to DEV"
-            );
         }
 
         if (errors.length > 0) {

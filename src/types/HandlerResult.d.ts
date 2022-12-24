@@ -2,8 +2,8 @@ export type HandlerResult =
     | {
           result:
               | "SUCCESS"
+              | "INVALID_ARGUMENTS"
               | "USER_MISSING_PERMISSIONS"
-              | "DISALLOWED_CHANNEL_OR_GUILD"
               | "OTHER";
           note?: string;
       }

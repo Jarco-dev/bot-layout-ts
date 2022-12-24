@@ -266,7 +266,9 @@ const interactionTypes = {
                 )}')`;
             }
 
-            defaults += `.setDMPermission(${selections.get("dm")})`;
+            if (!selections.get("dm")) {
+                defaults += ".setDMPermission(false})";
+            }
 
             if (selections.get("defaultMemberPermissions")) {
                 defaults += ".setDefaultMemberPermissions(0)";

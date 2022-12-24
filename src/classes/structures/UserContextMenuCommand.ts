@@ -13,12 +13,12 @@ export abstract class UserContextMenuCommand {
 
     protected constructor(p: {
         builder: Pick<ContextMenuCommandBuilder, "toJSON">;
-        enabled: boolean;
+        enabled?: boolean;
     }) {
         this.data = p.builder.toJSON();
-        this.enabled = p.enabled;
+        this.enabled = p.enabled ?? true;
 
-        if (this.data.type !== ApplicationCommandType.Message) {
+        if (this.data.type !== ApplicationCommandType.User) {
             this.client.logger.warn(
                 `${this.data.name} wrong context menu type in builder, handler disabled`
             );

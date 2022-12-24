@@ -234,7 +234,7 @@ export class InteractionLoader {
         if (!handler.enabled) {
             return {
                 result: "OTHER",
-                note: "disabled"
+                note: "handler disabled"
             };
         }
 

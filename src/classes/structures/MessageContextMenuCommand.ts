@@ -13,10 +13,10 @@ export abstract class MessageContextMenuCommand {
 
     protected constructor(p: {
         builder: Pick<ContextMenuCommandBuilder, "toJSON">;
-        enabled: boolean;
+        enabled?: boolean;
     }) {
         this.data = p.builder.toJSON();
-        this.enabled = p.enabled;
+        this.enabled = p.enabled ?? true;
 
         if (this.data.type !== ApplicationCommandType.Message) {
             this.client.logger.warn(

@@ -9,10 +9,10 @@ export abstract class SelectMenuComponent {
 
     protected constructor(p: {
         builder: Pick<SelectMenuBuilder, "toJSON">;
-        enabled: boolean;
+        enabled?: boolean;
     }) {
         this.data = p.builder.toJSON();
-        this.enabled = p.enabled;
+        this.enabled = p.enabled ?? true;
     }
 
     public abstract run(

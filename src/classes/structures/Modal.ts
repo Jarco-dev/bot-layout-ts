@@ -9,10 +9,10 @@ export abstract class Modal {
 
     protected constructor(p: {
         builder: Pick<ModalBuilder, "toJSON">;
-        enabled: boolean;
+        enabled?: boolean;
     }) {
         this.data = p.builder.toJSON();
-        this.enabled = p.enabled;
+        this.enabled = p.enabled ?? true;
     }
 
     public abstract run(
