@@ -1,4 +1,4 @@
-import type Client from "../index";
+import Client from "../index";
 import fs from "fs";
 import path from "path";
 import { EventHandler as EventHandlerStructure } from "@/structures";

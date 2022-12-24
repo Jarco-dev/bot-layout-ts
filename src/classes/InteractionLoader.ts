@@ -1,3 +1,6 @@
+import * as process from "process";
+import fs from "fs";
+import path from "path";
 import {
     ButtonComponent,
     ChatInputCommand,
@@ -7,11 +10,8 @@ import {
     MessageContextMenuCommand
 } from "@/structures";
 import { Client } from "@/classes";
-import fs from "fs";
-import path from "path";
 import { ApplicationCommandData, ButtonStyle, Interaction } from "discord.js";
 import { HandlerResult } from "@/types";
-import * as process from "process";
 
 interface GroupedHandlers {
     buttonComponents: { [key: string]: ButtonComponent };
