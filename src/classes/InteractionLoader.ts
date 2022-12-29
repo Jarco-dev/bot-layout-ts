@@ -48,8 +48,8 @@ export class InteractionLoader {
             {
                 name: "buttonComponents",
                 folderDir: path.join(
-                    process.cwd(),
-                    "src",
+                    __dirname,
+                    "..",
                     "interactions",
                     "buttonComponents"
                 ),
@@ -60,8 +60,8 @@ export class InteractionLoader {
             {
                 name: "chatInputCommands",
                 folderDir: path.join(
-                    process.cwd(),
-                    "src",
+                    __dirname,
+                    "..",
                     "interactions",
                     "chatInputCommands"
                 ),
@@ -72,8 +72,8 @@ export class InteractionLoader {
             {
                 name: "messageContextMenuCommands",
                 folderDir: path.join(
-                    process.cwd(),
-                    "src",
+                    __dirname,
+                    "..",
                     "interactions",
                     "messageContextMenuCommands"
                 ),
@@ -83,12 +83,7 @@ export class InteractionLoader {
             },
             {
                 name: "modals",
-                folderDir: path.join(
-                    process.cwd(),
-                    "src",
-                    "interactions",
-                    "modals"
-                ),
+                folderDir: path.join(__dirname, "..", "interactions", "modals"),
                 validateHandler: handler => {
                     return handler instanceof Modal;
                 }
@@ -96,8 +91,8 @@ export class InteractionLoader {
             {
                 name: "selectMenuComponents",
                 folderDir: path.join(
-                    process.cwd(),
-                    "src",
+                    __dirname,
+                    "..",
                     "interactions",
                     "selectMenuComponents"
                 ),
@@ -108,8 +103,8 @@ export class InteractionLoader {
             {
                 name: "userContextMenuCommands",
                 folderDir: path.join(
-                    process.cwd(),
-                    "src",
+                    __dirname,
+                    "..",
                     "interactions",
                     "userContextMenuCommands"
                 ),
