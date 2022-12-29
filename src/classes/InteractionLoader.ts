@@ -141,7 +141,7 @@ export class InteractionLoader {
                 }
 
                 // Load handler if it's a file ending with .ts
-                if (stat.isFile() && item.endsWith(".ts")) {
+                if (stat.isFile()) {
                     let handler: HandlerTypes;
                     try {
                         // Validate that the handler is the correct class type
