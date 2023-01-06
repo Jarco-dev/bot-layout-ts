@@ -3,7 +3,6 @@ export { CommandStatus } from "./CommandStatus";
 export { Config } from "./Config";
 export { HandlerResult } from "./HandlerResult";
 export { LogLevel } from "./LogLevel";
-export { SecretConfig } from "./SecretConfig";
 export { SenderMessageOptions } from "./SenderMessageOptions";
 export { SenderMessageType } from "./SenderMessageType";
 export { SenderReplyMethod } from "./SenderReplyMethod";

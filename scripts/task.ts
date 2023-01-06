@@ -3,6 +3,8 @@ import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
 import { isValidCron } from "cron-validator";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import { promptInput } from "./utils/prompts";
 
 const selections = new Map();

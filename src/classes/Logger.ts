@@ -71,7 +71,7 @@ export class Logger {
         }
 
         // Create streams
-        const dir = path.join(__dirname, "..", "..", "storage", "logs");
+        const dir = path.join(process.cwd(), "storage", "logs");
         this.combinedLogFile = this.createWriteStream(dir, "combined.log");
         this.errorLogFile = this.createWriteStream(dir, "error.log");
     }
