@@ -52,7 +52,7 @@ export class TaskLoader {
                 }
             } catch (err) {
                 this.client.logger.error(
-                    `Error while trying to load timer task file ${item}`,
+                    `Error while trying to load task file ${item}`,
                     err
                 );
             }
