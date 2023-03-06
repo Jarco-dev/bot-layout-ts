@@ -1,3 +1,5 @@
+// TODO: Fix extra } in interactions
+
 import * as path from "path";
 import * as fs from "fs";
 import * as handlebars from "handlebars";
@@ -12,6 +14,11 @@ import { getDirs } from "./utils/getDirs";
 const selections = new Map();
 
 const interactionTypes = {
+    Autocomplete: {
+        folder: "autocomplete",
+        builder: undefined,
+        event: "AutocompleteInteraction"
+    },
     ButtonComponent: {
         folder: "buttonComponents",
         builder: "ButtonBuilder",
@@ -180,6 +187,7 @@ const interactionTypes = {
     // Collect command only options
     if (
         [
+            "Autocomplete",
             "ChatInputCommand",
             "MessageContextMenuCommand",
             "UserContextMenuCommand"
@@ -202,19 +210,26 @@ const interactionTypes = {
             );
         }
 
-        // Collect enabled in dm
-        selections.set(
-            "dm",
-            await promptConfirm("Should it be enabled in DM?")
-        );
-
-        // Collect default member permissions
-        selections.set(
-            "defaultMemberPermissions",
-            await promptConfirm(
-                "Should default member permissions be set to 0?"
+        // Collect other command execution options
+        else if (
+            ["MessageContextMenuCommand", "UserContextMenuCommand"].includes(
+                selections.get("type")
             )
-        );
+        ) {
+            // Collect enabled in dm
+            selections.set(
+                "dm",
+                await promptConfirm("Should it be enabled in DM?")
+            );
+
+            // Collect default member permissions
+            selections.set(
+                "defaultMemberPermissions",
+                await promptConfirm(
+                    "Should default member permissions be set to 0?"
+                )
+            );
+        }
     }
 
     // Collect non application command only options
@@ -251,6 +266,10 @@ const interactionTypes = {
 
     const getExtraDjsImports = (): string => {
         let imports = "";
+        if (typeSettings.builder) {
+            imports += `, ${typeSettings.builder}`;
+        }
+
         if (
             selections.get("type") === "MessageContextMenuCommand" ||
             selections.get("type") === "UserContextMenuCommand"
@@ -310,14 +329,24 @@ const interactionTypes = {
         else return `guilds: [${selections.get("guilds")}],\n`;
     };
 
+    let uniqueAttribute;
+    if (selections.get("type") === "Autocomplete") {
+        uniqueAttribute = `data: { commandName: '${selections.get(
+            "handlerIdentifiable"
+        )}' }`;
+    } else if (typeSettings.builder) {
+        uniqueAttribute = `builder: new ${
+            typeSettings.builder
+        }()${getBuilderDefaults()}`;
+    }
+
     const compiled = template({
         extraNests: selections.get("usesSubDir") === true ? "../" : "",
         type: selections.get("type"),
-        builder: typeSettings.builder,
+        uniqueAttribute,
         event: typeSettings.event,
         extraDjsImports: getExtraDjsImports(),
         name: getName(),
-        builderDefaults: getBuilderDefaults(),
         guilds: getGuilds()
     });
 

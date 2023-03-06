@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import {
+    Autocomplete,
     ButtonComponent,
     ChatInputCommand,
     UserContextMenuCommand,
@@ -16,6 +17,7 @@ import { Client } from "@/classes";
 import { ApplicationCommandData, ButtonStyle, Interaction } from "discord.js";
 
 interface GroupedHandlers {
+    autocomplete: { [key: string]: Autocomplete };
     buttonComponents: { [key: string]: ButtonComponent };
     chatInputCommands: { [key: string]: ChatInputCommand };
     messageContextMenuCommands: { [key: string]: MessageContextMenuCommand };
@@ -46,6 +48,7 @@ export class InteractionLoader {
         this.client = client;
 
         this.groupedHandlers = {
+            autocomplete: {},
             buttonComponents: {},
             chatInputCommands: {},
             messageContextMenuCommands: {},
@@ -59,6 +62,18 @@ export class InteractionLoader {
         };
 
         this.handlersTypeConfig = [
+            {
+                name: "autocomplete",
+                folderDir: path.join(
+                    __dirname,
+                    "..",
+                    "interactions",
+                    "autocomplete"
+                ),
+                validateHandler: handler => {
+                    return handler instanceof Autocomplete;
+                }
+            },
             {
                 name: "buttonComponents",
                 folderDir: path.join(
@@ -265,7 +280,9 @@ export class InteractionLoader {
     }
 
     public getHandler(i: Interaction): HandlerTypes | undefined {
-        if (i.isButton()) {
+        if (i.isAutocomplete()) {
+            return this.groupedHandlers.autocomplete[i.commandName];
+        } else if (i.isButton()) {
             return this.groupedHandlers.buttonComponents[i.customId];
         } else if (i.isChatInputCommand()) {
             return this.groupedHandlers.chatInputCommands[i.commandName];

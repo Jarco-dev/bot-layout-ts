@@ -1,3 +1,4 @@
+export { Autocomplete } from "./Autocomplete";
 export { ButtonComponent } from "./ButtonComponent";
 export { ChannelSelectMenuComponent } from "./ChannelSelectMenuComponent";
 export { ChatInputCommand } from "./ChatInputCommand";
