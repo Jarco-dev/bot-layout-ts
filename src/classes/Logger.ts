@@ -60,10 +60,10 @@ export class Logger {
                 break;
 
             default: {
-                this.level = 0;
-                console.error(
-                    ...this.formatLog("CONSOLE", 4, [
-                        `${level} is a invalid LogLevel, defaulting to VERBOSE`
+                this.level = 2;
+                console.warn(
+                    ...this.formatLog("CONSOLE", 3, [
+                        `${level} is a invalid LogLevel, defaulting to INFO`
                     ])
                 );
                 break;

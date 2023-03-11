@@ -4,6 +4,7 @@ import { UserSelectMenuBuilder, UserSelectMenuInteraction } from "discord.js";
 
 export abstract class UserSelectMenuComponent {
     protected readonly client = Client;
+    public readonly matchRegex?: RegExp;
     public readonly data: ReturnType<UserSelectMenuBuilder["toJSON"]>;
     public readonly enabled: boolean;
 

@@ -18,6 +18,9 @@ export class TaskLoader {
     }
 
     public async loadAllTasks(): Promise<void> {
+        // Cancel if there is no tasks folder
+        if (!fs.existsSync(path.join(this.path))) return;
+
         // Get all the tasks
         const items = await fs.promises.readdir(this.path);
         for (const item of items) {
@@ -40,7 +43,7 @@ export class TaskLoader {
                 const task = new Task();
                 if (task.enabled) {
                     if (task.cronExpression in this.tasks) {
-                        this.tasks[task.cronExpression] = task;
+                        this.tasks[task.cronExpression] = [task];
                     } else {
                         this.tasks[task.cronExpression] = [task];
                     }
@@ -63,13 +66,20 @@ export class TaskLoader {
         for (const cronExpression in this.tasks) {
             try {
                 const tasks = this.tasks[cronExpression];
-                cron.schedule(cronExpression, () => {
+                cron.schedule(cronExpression, async () => {
                     for (const task of tasks) {
                         try {
                             this.client.logger.verbose(
                                 `[TaskHandler] Running ${task.name}`
                             );
-                            task.run();
+
+                            const data = await task.run();
+                            if (data.result === "ERRORED") {
+                                this.client.logger.error(
+                                    `[TaskHandler] error in result, ${data.note}`,
+                                    data.error
+                                );
+                            }
                         } catch (err) {
                             this.client.logger.error(
                                 `Error while running ${task.name}`,

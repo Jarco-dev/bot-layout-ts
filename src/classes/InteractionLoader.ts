@@ -32,12 +32,17 @@ interface GroupedHandlers {
     userContextMenuCommands: { [key: string]: UserContextMenuCommand };
 }
 
+type GroupedMatchRegex = {
+    [key in keyof GroupedHandlers]: { regex: RegExp; handlerName: string }[];
+};
+
 type GroupKeys = keyof GroupedHandlers;
 type HandlerTypes = GroupedHandlers[GroupKeys][string];
 
 export class InteractionLoader {
     protected readonly client: Client;
     public readonly groupedHandlers: GroupedHandlers;
+    public readonly groupedMatchRegex: GroupedMatchRegex;
     public readonly handlersTypeConfig: {
         name: GroupKeys;
         folderDir: string;
@@ -59,6 +64,20 @@ export class InteractionLoader {
             mentionableSelectMenuComponents: {},
             roleSelectMenuComponents: {},
             userSelectMenuComponents: {}
+        };
+
+        this.groupedMatchRegex = {
+            autocomplete: [],
+            buttonComponents: [],
+            chatInputCommands: [],
+            messageContextMenuCommands: [],
+            modals: [],
+            stringSelectMenuComponents: [],
+            channelSelectMenuComponents: [],
+            mentionableSelectMenuComponents: [],
+            roleSelectMenuComponents: [],
+            userSelectMenuComponents: [],
+            userContextMenuCommands: []
         };
 
         this.handlersTypeConfig = [
@@ -240,12 +259,14 @@ export class InteractionLoader {
                             // Handler is enabled
                             if (!handler.enabled) continue;
 
-                            // Add handler to corresponding group
+                            // Add handler to corresponding (match regex) group
                             const name =
                                 "name" in handler.data
                                     ? handler.data.name
                                     : "custom_id" in handler.data
                                     ? handler.data.custom_id
+                                    : "commandName" in handler.data
+                                    ? handler.data.commandName
                                     : undefined;
 
                             if (!name) {
@@ -257,6 +278,15 @@ export class InteractionLoader {
 
                             this.groupedHandlers[p.name as GroupKeys][name] =
                                 handler;
+
+                            if ("matchRegex" in handler && handler.matchRegex) {
+                                this.groupedMatchRegex[
+                                    p.name as GroupKeys
+                                ].push({
+                                    regex: handler.matchRegex,
+                                    handlerName: name
+                                });
+                            }
 
                             // Log loaded message
                             this.client.logger.debug(
@@ -280,32 +310,94 @@ export class InteractionLoader {
     }
 
     public getHandler(i: Interaction): HandlerTypes | undefined {
+        const getHandlerByMatchRegex = (
+            i: Interaction,
+            group: GroupKeys
+        ): HandlerTypes | undefined => {
+            const name = i.isCommand()
+                ? i.commandName
+                : i.isMessageComponent() || i.isModalSubmit()
+                ? i.customId
+                : undefined;
+            if (!name) {
+                this.client.logger.warn(
+                    "Interaction handler was unable to obtain the name from a interaction"
+                );
+                return;
+            }
+
+            const result = this.groupedMatchRegex[group].find(i =>
+                i.regex.test(name)
+            );
+            if (!result) return;
+
+            return this.groupedHandlers[group][result.handlerName];
+        };
+
         if (i.isAutocomplete()) {
-            return this.groupedHandlers.autocomplete[i.commandName];
+            const handler = this.groupedHandlers.autocomplete[i.commandName];
+            if (!handler) return getHandlerByMatchRegex(i, "autocomplete");
+            return handler;
         } else if (i.isButton()) {
-            return this.groupedHandlers.buttonComponents[i.customId];
+            const handler = this.groupedHandlers.buttonComponents[i.customId];
+            if (!handler) return getHandlerByMatchRegex(i, "buttonComponents");
+            return handler;
         } else if (i.isChatInputCommand()) {
-            return this.groupedHandlers.chatInputCommands[i.commandName];
+            const handler =
+                this.groupedHandlers.chatInputCommands[i.commandName];
+            if (!handler) return getHandlerByMatchRegex(i, "chatInputCommands");
+            return handler;
         } else if (i.isMessageContextMenuCommand()) {
-            return this.groupedHandlers.messageContextMenuCommands[
-                i.commandName
-            ];
+            const handler =
+                this.groupedHandlers.messageContextMenuCommands[i.commandName];
+            if (!handler)
+                return getHandlerByMatchRegex(i, "messageContextMenuCommands");
+            return handler;
         } else if (i.isModalSubmit()) {
-            return this.groupedHandlers.modals[i.customId];
+            const handler = this.groupedHandlers.modals[i.customId];
+            if (!handler) return getHandlerByMatchRegex(i, "modals");
+            return handler;
         } else if (i.isStringSelectMenu()) {
-            return this.groupedHandlers.stringSelectMenuComponents[i.customId];
+            const handler =
+                this.groupedHandlers.stringSelectMenuComponents[i.customId];
+            if (!handler)
+                return getHandlerByMatchRegex(i, "stringSelectMenuComponents");
+            return handler;
         } else if (i.isUserSelectMenu()) {
-            return this.groupedHandlers.userSelectMenuComponents[i.customId];
+            const handler =
+                this.groupedHandlers.userSelectMenuComponents[i.customId];
+            if (!handler)
+                return getHandlerByMatchRegex(i, "userSelectMenuComponents");
+            return handler;
         } else if (i.isRoleSelectMenu()) {
-            return this.groupedHandlers.roleSelectMenuComponents[i.customId];
+            const handler =
+                this.groupedHandlers.roleSelectMenuComponents[i.customId];
+            if (!handler)
+                return getHandlerByMatchRegex(i, "roleSelectMenuComponents");
+            return handler;
         } else if (i.isMentionableSelectMenu()) {
-            return this.groupedHandlers.mentionableSelectMenuComponents[
-                i.customId
-            ];
+            const handler =
+                this.groupedHandlers.mentionableSelectMenuComponents[
+                    i.customId
+                ];
+            if (!handler)
+                return getHandlerByMatchRegex(
+                    i,
+                    "mentionableSelectMenuComponents"
+                );
+            return handler;
         } else if (i.isChannelSelectMenu()) {
-            return this.groupedHandlers.channelSelectMenuComponents[i.customId];
+            const handler =
+                this.groupedHandlers.channelSelectMenuComponents[i.customId];
+            if (!handler)
+                return getHandlerByMatchRegex(i, "channelSelectMenuComponents");
+            return handler;
         } else if (i.isUserContextMenuCommand()) {
-            return this.groupedHandlers.userContextMenuCommands[i.commandName];
+            const handler =
+                this.groupedHandlers.userContextMenuCommands[i.commandName];
+            if (!handler)
+                return getHandlerByMatchRegex(i, "userContextMenuCommands");
+            return handler;
         } else {
             return;
         }
@@ -369,7 +461,7 @@ export class InteractionLoader {
             .set(globalCommands)
             .then(commands => {
                 this.client.logger.info(
-                    `Updated ${commands.size} global application command(s)`
+                    `[InteractionLoader] Updated ${commands.size} global application command(s)`
                 );
             })
             .catch(err => {
