@@ -1,0 +1,37 @@
+name: Run Linters
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  lint:
+    name: Run linters
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install node v16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Revert changes into the package-lock.json file
+        run: git checkout -- package-lock.json
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v2
+        with:
+          eslint: true
+          prettier: true
+          eslint_args: "--max-warnings 0"
+          auto_fix: true
+          commit: true
+          git_name: "Linter"
+          git_email: "lint@jarco.dev"
