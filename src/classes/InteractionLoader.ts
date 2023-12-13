@@ -14,7 +14,11 @@ import {
     UserSelectMenuComponent
 } from "@/structures";
 import { Client } from "@/classes";
-import { ApplicationCommandData, ButtonStyle, Interaction } from "discord.js";
+import {
+    ApplicationCommandDataResolvable,
+    ButtonStyle,
+    Interaction
+} from "discord.js";
 
 interface GroupedHandlers {
     autocomplete: { [key: string]: Autocomplete };
@@ -428,13 +432,13 @@ export class InteractionLoader {
         await this.client.application?.fetch();
         if (!this.client.isReady() || !this.client.application) {
             this.client.logger.warn(
-                "You can't call the InteractionLoader#createCommands method before the client is ready!"
+                "You can't call the InteractionLoader#updateApplicationCommands method before the client is ready!"
             );
             return;
         }
 
         // Gather command data
-        const globalCommands: ApplicationCommandData[] = [];
+        const globalCommands: ApplicationCommandDataResolvable[] = [];
 
         const addCommand = (
             command:
