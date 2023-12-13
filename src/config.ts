@@ -1,4 +1,4 @@
-import type { Config } from "./types";
+import { Config } from "@/types";
 import { IntentsBitField } from "discord.js";
 
 const config: Config = {

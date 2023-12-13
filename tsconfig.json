@@ -1,14 +1,21 @@
 {
     "extends": "./node_modules/gts/tsconfig-google.json",
     "compilerOptions": {
-        "allowJs": false, // check
-        "esModuleInterop": true, // check
-        "target": "ES2021", // check
-        "baseUrl": ".", // check
-        "outDir": "dist", // check
-        "removeComments": true, // check
+        "allowJs": false,
+        "esModuleInterop": true,
+        "target": "ES2021",
+        "rootDir": "./src",
+        "outDir": "dist",
+        "baseUrl": ".",
+        "skipLibCheck": true,
+        "sourceMap": false,
         "declaration": false,
-        "sourceMap": false
+        "paths": {
+            "@/interactions/*": ["src/interactions/*"],
+            "@/classes": ["src/classes"],
+            "@/structures": ["src/classes/structures"],
+            "@/types": ["src/types"]
+        }
     },
     "include": [
         "src/**/*"
