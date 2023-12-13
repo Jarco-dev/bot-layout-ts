@@ -308,7 +308,7 @@ const interactionTypes = {
             }
 
             if (!selections.get("dm")) {
-                defaults += ".setDMPermission(false})";
+                defaults += ".setDMPermission(false)";
             }
 
             if (selections.get("defaultMemberPermissions")) {
