@@ -238,7 +238,7 @@ const interactionTypes = {
         selections.set(
             "handlerIdentifiable",
             await promptInput(
-                "Custom id, must follow SCREAM_SNAKE_CASE:",
+                "Custom id, must follow camelCase:",
                 false
             )
         );
