@@ -237,10 +237,7 @@ const interactionTypes = {
         // Collect handler identifiable
         selections.set(
             "handlerIdentifiable",
-            await promptInput(
-                "Custom id, must follow camelCase:",
-                false
-            )
+            await promptInput("Custom id, must follow camelCase:", false)
         );
     }
 
