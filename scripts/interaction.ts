@@ -330,20 +330,37 @@ const interactionTypes = {
     };
 
     let uniqueAttribute;
+    let builder;
     if (selections.get("type") === "Autocomplete") {
         uniqueAttribute = `commandName: '${selections.get(
             "handlerIdentifiable"
         )}'`;
     } else if (typeSettings.builder) {
-        uniqueAttribute = `builder: new ${
-            typeSettings.builder
-        }()${getBuilderDefaults()}`;
+        if (
+            [
+                "ChatInputCommand",
+                "MessageContextMenuCommand",
+                "UserContextMenuCommand"
+            ].includes(selections.get("type"))
+        ) {
+            uniqueAttribute = `builder: new ${
+                typeSettings.builder
+            }()${getBuilderDefaults()}`;
+        } else {
+            uniqueAttribute = `builder: ${
+                getName() + selections.get("type")
+            }.builder`;
+            builder = `public static readonly builder = new ${
+                typeSettings.builder
+            }()${getBuilderDefaults()}`;
+        }
     }
 
     const compiled = template({
         extraNests: selections.get("usesSubDir") === true ? "../" : "",
         type: selections.get("type"),
         uniqueAttribute,
+        builder,
         event: typeSettings.event,
         extraDjsImports: getExtraDjsImports(),
         name: getName(),
