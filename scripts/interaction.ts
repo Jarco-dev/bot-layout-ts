@@ -331,9 +331,9 @@ const interactionTypes = {
 
     let uniqueAttribute;
     if (selections.get("type") === "Autocomplete") {
-        uniqueAttribute = `data: { commandName: '${selections.get(
+        uniqueAttribute = `commandName: '${selections.get(
             "handlerIdentifiable"
-        )}' }`;
+        )}'`;
     } else if (typeSettings.builder) {
         uniqueAttribute = `builder: new ${
             typeSettings.builder
