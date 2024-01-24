@@ -1,23 +1,15 @@
 import { Client } from "@/classes";
 import {
-    ActionRow,
     ButtonInteraction,
+    ChannelType,
     CommandInteraction,
+    EmbedBuilder,
     GuildChannel,
-    MessageActionRowComponent,
     PermissionResolvable,
+    PermissionsBitField,
     Role,
     SelectMenuInteraction,
     TextBasedChannel
-} from "discord.js";
-import {
-    ActionRowBuilder,
-    ButtonBuilder,
-    ChannelType,
-    ComponentType,
-    EmbedBuilder,
-    PermissionsBitField,
-    SelectMenuBuilder
 } from "discord.js";
 
 export class Utilities {
@@ -204,31 +196,5 @@ export class Utilities {
             }
         }
         return false;
-    }
-
-    public getMessageActionRowBuilder(
-        actionRow: ActionRow<MessageActionRowComponent>
-    ): ActionRowBuilder<ButtonBuilder | SelectMenuBuilder> {
-        const components = actionRow
-            .toJSON()
-            .components.reduce(
-                (a: (ButtonBuilder | SelectMenuBuilder)[], component) => {
-                    const builder: ButtonBuilder | SelectMenuBuilder =
-                        component.type === ComponentType.Button
-                            ? ButtonBuilder.from(component)
-                            : SelectMenuBuilder.from(component);
-                    a.push(builder);
-                    return a;
-                },
-                []
-            );
-
-        return components[0].data.type === ComponentType.Button
-            ? new ActionRowBuilder<ButtonBuilder>().addComponents(
-                  components as ButtonBuilder[]
-              )
-            : new ActionRowBuilder<SelectMenuBuilder>().addComponents(
-                  components as SelectMenuBuilder[]
-              );
     }
 }
