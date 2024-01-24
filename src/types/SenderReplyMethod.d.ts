@@ -1,1 +1,1 @@
-export type SenderReplyMethod = "REPLY" | "EDIT_REPLY" | "UPDATE";
+export type SenderReplyMethod = "REPLY" | "EDIT_REPLY" | "UPDATE" | "FOLLOW_UP";

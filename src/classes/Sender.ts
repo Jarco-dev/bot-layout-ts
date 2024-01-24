@@ -35,7 +35,6 @@ export class Sender {
             | RoleSelectMenuInteraction
             | MentionableSelectMenuInteraction
             | ChannelSelectMenuInteraction
-            | MessageComponentInteraction
             | ModalSubmitInteraction,
         payload: InteractionUpdateOptions & { fetchReply: true },
         options: SenderReplyOptions & { method: "UPDATE" }
@@ -49,7 +48,6 @@ export class Sender {
             | RoleSelectMenuInteraction
             | MentionableSelectMenuInteraction
             | ChannelSelectMenuInteraction
-            | MessageComponentInteraction
             | ModalSubmitInteraction,
         payload: InteractionReplyOptions & { fetchReply: true },
         options: SenderReplyOptions &
@@ -63,7 +61,6 @@ export class Sender {
             | RoleSelectMenuInteraction
             | MentionableSelectMenuInteraction
             | ChannelSelectMenuInteraction
-            | MessageComponentInteraction
             | ModalSubmitInteraction,
         payload: InteractionUpdateOptions,
         options: SenderReplyOptions & { method: "UPDATE" }
@@ -77,7 +74,6 @@ export class Sender {
             | RoleSelectMenuInteraction
             | MentionableSelectMenuInteraction
             | ChannelSelectMenuInteraction
-            | MessageComponentInteraction
             | ModalSubmitInteraction,
         payload: InteractionReplyOptions,
         options: SenderReplyOptions &
@@ -92,7 +88,6 @@ export class Sender {
             | RoleSelectMenuInteraction
             | MentionableSelectMenuInteraction
             | ChannelSelectMenuInteraction
-            | MessageComponentInteraction
             | ModalSubmitInteraction,
         payload: InteractionReplyOptions & { fetchReply: true },
         options?: SenderReplyOptions
@@ -106,7 +101,6 @@ export class Sender {
             | RoleSelectMenuInteraction
             | MentionableSelectMenuInteraction
             | ChannelSelectMenuInteraction
-            | MessageComponentInteraction
             | ModalSubmitInteraction,
         payload: InteractionReplyOptions,
         options?: SenderReplyOptions
@@ -120,7 +114,6 @@ export class Sender {
             | RoleSelectMenuInteraction
             | MentionableSelectMenuInteraction
             | ChannelSelectMenuInteraction
-            | MessageComponentInteraction
             | ModalSubmitInteraction,
         payload: InteractionUpdateOptions | InteractionReplyOptions,
         options?: SenderReplyOptions
@@ -163,6 +156,8 @@ export class Sender {
                 throw new Error(
                     "The UPDATE method can only be used on MessageComponentInteractions"
                 );
+        } else if (options.method === "FOLLOW_UP") {
+            msg = await i.followUp(payload as InteractionReplyOptions);
         } else msg = await i.reply(payload as InteractionReplyOptions);
 
         if (options.delTime && msg instanceof Message && msg.deletable) {
