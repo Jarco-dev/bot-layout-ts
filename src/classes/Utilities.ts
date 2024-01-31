@@ -1,15 +1,9 @@
 import { Client } from "@/classes";
 import {
-    ButtonInteraction,
-    ChannelType,
-    CommandInteraction,
     EmbedBuilder,
-    GuildChannel,
-    PermissionResolvable,
-    PermissionsBitField,
-    Role,
-    SelectMenuInteraction,
-    TextBasedChannel
+    GuildChannelResolvable,
+    GuildMember,
+    PermissionResolvable
 } from "discord.js";
 
 export class Utilities {
@@ -69,132 +63,26 @@ export class Utilities {
         return lines.join("\n");
     }
 
-    public hasPermissions(
-        channel: GuildChannel,
+    public checkPermissions(
+        member: GuildMember,
         permissions: PermissionResolvable[],
-        notifHere?:
-            | TextBasedChannel
-            | CommandInteraction
-            | ButtonInteraction
-            | SelectMenuInteraction
-    ): boolean {
-        // Client member exists
-        if (!channel.guild.members.me)
-            throw new Error(
-                "Could not get channel.guild.member.me for permission checking"
-            );
-        const perms = channel.permissionsFor(channel.guild.members.me);
-        permissions = permissions.filter(perm => !perms.has(perm));
-        if (permissions.length === 0) return true;
-        if (notifHere) {
-            if ("isAutocomplete" in notifHere) {
-                this.client.sender.reply(
-                    notifHere,
-                    {
-                        content: `The bot is missing the \`${permissions.join(
-                            "`, `"
-                        )}\` permission(s) in ${channel}, Please contact a server admin!`
-                    },
-                    { msgType: "INVALID" }
-                );
-            } else {
-                if (!notifHere.partial) {
-                    if (notifHere.type !== ChannelType.DM) {
-                        const notifChanPerms = notifHere.permissionsFor(
-                            channel.guild.members.me
-                        );
-                        const { ViewChannel, SendMessages, EmbedLinks } =
-                            PermissionsBitField.Flags;
-                        if (
-                            !notifChanPerms.has(
-                                new PermissionsBitField([
-                                    ViewChannel,
-                                    SendMessages,
-                                    EmbedLinks
-                                ])
-                            )
-                        )
-                            return false;
-                    }
-                    this.client.sender.msgChannel(
-                        notifHere,
-                        {
-                            content: `The bot is missing the \`${permissions.join(
-                                "`, `"
-                            )}\` permission(s) in ${channel}, Please contact a server admin!`
-                        },
-                        { msgType: "INVALID" }
-                    );
-                } else
-                    throw new Error(
-                        "Can't send missing permissions message in partial channel"
-                    );
-            }
-        }
-        return false;
-    }
+        channel?: GuildChannelResolvable
+    ): { hasAll: true } | { hasAll: false; missing: PermissionResolvable[] } {
+        let missing: PermissionResolvable[];
 
-    public isAboveRoles(
-        roles: Role[],
-        notifHere?:
-            | TextBasedChannel
-            | CommandInteraction
-            | ButtonInteraction
-            | SelectMenuInteraction
-    ): boolean {
-        roles = roles
-            .filter(role => !role.editable)
-            .sort((a, b) => b.position - a.position);
-        if (roles.length === 0) return true;
-        if (notifHere) {
-            if ("isAutocomplete" in notifHere) {
-                this.client.sender.reply(
-                    notifHere,
-                    {
-                        content: `The bot is too low in the role hierarchy to manage the \`${roles.join(
-                            "`, `"
-                        )}\` role(s), Please contact a server admin!`
-                    },
-                    { msgType: "INVALID" }
-                );
-            } else {
-                if (!notifHere.partial) {
-                    if (notifHere.type !== ChannelType.DM) {
-                        if (!notifHere.guild.members.me)
-                            throw new Error(
-                                "Could not get channel.guild.members.me for permission checking"
-                            );
-                        const notifChanPerms = notifHere.permissionsFor(
-                            notifHere.guild.members.me
-                        );
-                        const { ViewChannel, SendMessages, EmbedLinks } =
-                            PermissionsBitField.Flags;
-                        if (
-                            !notifChanPerms.has(
-                                new PermissionsBitField([
-                                    ViewChannel,
-                                    SendMessages,
-                                    EmbedLinks
-                                ])
-                            )
-                        )
-                            return false;
-                    }
-                    this.client.sender.msgChannel(
-                        notifHere,
-                        {
-                            content: `The bot is too low in the role hierarchy to manage the \`${roles.join(
-                                "`, `"
-                            )}\` role(s), Please contact a server admin!`
-                        },
-                        { msgType: "INVALID" }
-                    );
-                } else
-                    throw new Error(
-                        "Can't send missing permissions message in dm channel"
-                    );
-            }
+        if (channel) {
+            missing = permissions.filter(
+                perm => !member.permissionsIn(channel).has(perm)
+            );
+        } else {
+            missing = permissions.filter(perm => !member.permissions.has(perm));
         }
-        return false;
+
+        return missing.length === 0
+            ? { hasAll: true }
+            : {
+                  hasAll: missing.length === 0,
+                  missing: missing
+              };
     }
 }
