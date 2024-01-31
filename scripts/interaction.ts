@@ -1,5 +1,3 @@
-// TODO: Fix extra } in interactions
-
 import * as path from "path";
 import * as fs from "fs";
 import * as handlebars from "handlebars";
@@ -349,7 +347,7 @@ const interactionTypes = {
             }.builder`;
             builder = `public static readonly builder = new ${
                 typeSettings.builder
-            }()${getBuilderDefaults()}`;
+            }()${getBuilderDefaults()}\n`;
         }
     }
 
