@@ -4,8 +4,6 @@ WORKDIR /usr/src/app
 
 FROM base as deps
 
-RUN apk add --no-cache python3 make g++
-
 COPY package*.json ./
 COPY ./prisma ./prisma
 
