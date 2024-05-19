@@ -17,27 +17,17 @@ A basic layout for a discord bot using typescript
 
 The bot-layout-ts discord bot
 
-# Compiling
-
-* Open a terminal and navigate to the bots folder
-* Run `npm install` to install dependencies
-* Run `npm build` to compile the bot
-* The bot will be compiled into ./dist/src
-
-# Installation
+# Setup
 
 * In `.env.example` fill in the config values
 * Remove `.example` from `.env.example`
-* Open a terminal and navigate to the bots folder
-* Execute `npm install --production` and wait till it's done
-* Execute `prisma migrate deploy` and wait till it's done
-* Execute `prisma generate` and wait till it's done
-* You're ready to start the bot!
+* Now move onto `starting`!
 
 # Starting
 
+* Make sure you have docker and docker compose installed
 * Open a terminal and navigate to the bots folder
-* Run `npm run start` and the bot should log in
+* Run `docker compose up -d` and the bot should startup
 * The bot is now ready for use
 
 # Npm commands
