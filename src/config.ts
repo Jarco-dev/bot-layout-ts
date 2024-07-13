@@ -17,25 +17,7 @@ const config: Config = {
 
     // Discord client options
     CLIENT_OPTIONS: {
-        intents: [
-            IntentsBitField.Flags.DirectMessageReactions,
-            IntentsBitField.Flags.DirectMessages,
-            IntentsBitField.Flags.GuildIntegrations,
-            IntentsBitField.Flags.DirectMessageTyping,
-            IntentsBitField.Flags.GuildBans,
-            IntentsBitField.Flags.GuildEmojisAndStickers,
-            IntentsBitField.Flags.GuildInvites,
-            IntentsBitField.Flags.GuildMembers,
-            IntentsBitField.Flags.GuildMessageReactions,
-            IntentsBitField.Flags.GuildMessages,
-            IntentsBitField.Flags.GuildMessageTyping,
-            IntentsBitField.Flags.GuildPresences,
-            IntentsBitField.Flags.Guilds,
-            IntentsBitField.Flags.GuildScheduledEvents,
-            IntentsBitField.Flags.GuildVoiceStates,
-            IntentsBitField.Flags.GuildWebhooks,
-            IntentsBitField.Flags.MessageContent
-        ]
+        intents: [IntentsBitField.Flags.Guilds]
     },
 
     // Bot version (acquired from package.json)
