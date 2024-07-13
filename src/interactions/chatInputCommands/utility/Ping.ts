@@ -8,7 +8,13 @@ export default class PingChatInputCommand extends ChatInputCommand {
             builder: new SlashCommandBuilder()
                 .setName("ping")
                 .setDescription("Check the bots response time")
-                .setDMPermission(true),
+                .setDMPermission(true)
+                .addStringOption(option =>
+                    option
+                        .setName("action")
+                        .setDescription("Extra actions for the ping command")
+                        .addChoices({ name: "Explain", value: "explain" })
+                ),
             enabled: true
         });
     }
