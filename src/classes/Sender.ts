@@ -164,10 +164,10 @@ export class Sender {
             // Delete timeout
             const msg1 = msg;
             setTimeout(() => msg1.delete().catch(() => {}), options.delTime);
-
-            // Return message
-            return msg;
         }
+
+        // Return message
+        return msg;
     }
 
     public send(
