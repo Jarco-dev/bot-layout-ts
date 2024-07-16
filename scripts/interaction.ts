@@ -140,13 +140,10 @@ const interactionTypes = {
         );
         fs.mkdirSync(path.join(handlerDir, dirInput, subDirInput));
         selections.set("dir", path.resolve(handlerDir, dirInput, subDirInput));
-        selections.set("usesSubDir", true);
     } else if (subDirInput === "Don't use a subdirectory") {
         selections.set("dir", path.resolve(handlerDir, dirInput));
-        selections.set("usesSubDir", false);
     } else {
         selections.set("dir", path.resolve(handlerDir, dirInput, subDirInput));
-        selections.set("usesSubDir", true);
     }
 
     // Collect file name
@@ -352,7 +349,6 @@ const interactionTypes = {
     }
 
     const compiled = template({
-        extraNests: selections.get("usesSubDir") === true ? "../" : "",
         type: selections.get("type"),
         uniqueAttribute,
         builder,
